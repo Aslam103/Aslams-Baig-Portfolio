@@ -1,0 +1,272 @@
+Create a modern, premium, futuristic personal AI portfolio + dashboard website for Mirza Aslam Baig.
+
+This is not a simple resume website. It should feel like a personal brand ecosystem, combining:
+- Biodata
+- Resume/CV
+- Achievements
+- Courses taught
+- Work history
+- Sports background
+- Vision, mission, values
+- Ongoing work
+- Upcoming plans
+- Documents section
+- AI chatbot
+- Automation section
+- Clean dashboard UI
+
+Important:
+- Use modern UI/UX
+- Make it responsive for mobile, tablet, and desktop
+- Use a premium dark theme with elegant gradients
+- Suggested colors:
+  - Deep navy / midnight blue background
+  - Purple / cyan glow accents
+  - White and soft gray text
+  - Use subtle gold only for highlights
+- Keep it professional, modern, and calm
+- Avoid clutter
+- Use cards, icons, smooth animations, hover effects, and glassmorphism
+- The design should look like a 2026-level AI portfolio dashboard
+
+Project Identity:
+Name: Mirza Aslam Baig
+Title: AI Educator | Course Designer | Mentor | Content Creator | System Builder
+
+Hero Section:
+- Name
+- Title
+- Short tagline: “Learn → Apply → Transform”
+- Buttons:
+  - View Resume
+  - View Biodata
+  - Explore Courses
+  - Chat with AI
+  - Contact Me
+
+AI Chatbot Section:
+Create a chatbot panel on the website.
+The chatbot should feel like a personal assistant for the portfolio.
+It should answer questions about:
+- biography
+- education
+- teaching experience
+- courses
+- achievements
+- sports background
+- vision and mission
+- current work
+- future plans
+
+The chatbot section should include:
+- Chat window UI
+- Message input box
+- Send button
+- Quick action buttons
+- Suggested questions
+- Loading animation
+- Chat history panel styling
+
+Chatbot Integration Note:
+Design the frontend so it can connect to an external n8n automation workflow later.
+Assume the chatbot backend will be connected through an API webhook from n8n running in Docker.
+Add a placeholder API endpoint configuration like:
+- N8N webhook URL
+- Chat API route
+- Bot response loader
+
+Buttons / Quick Actions:
+Add visible action buttons in the dashboard:
+- About Me
+- Resume
+- Biodata
+- Achievements
+- Courses
+- Documents
+- Vision & Mission
+- Ongoing Work
+- Upcoming Plans
+- Skills
+- Contact
+- Chatbot
+- Download CV
+- WhatsApp
+- YouTube
+- Instagram / Social Links
+- Certificates
+- Projects
+
+Section Layout:
+
+1. Hero Section
+2. About Me
+3. Skills Dashboard
+4. Resume Summary
+5. Biodata Card
+6. Teaching Philosophy
+7. Courses Taught
+8. Achievements
+9. Sports Background
+10. Work Experience Timeline
+11. Documents and Downloads
+12. Ongoing Projects
+13. Upcoming Plans
+14. Vision, Mission, and Values
+15. AI Chatbot Section
+16. Contact Section
+17. Footer
+
+About Me Section:
+Write a short professional bio:
+- Teacher, mentor, researcher, and lifelong learner
+- Focus on practical learning, emotional intelligence, interactive teaching, and real-life application
+- Experience in education, technology, content creation, and training
+
+Skills Dashboard:
+Show skills as visual cards or chips:
+- Teaching and mentoring
+- Course design
+- AI tools
+- Excel
+- Data analysis
+- Financial learning
+- Graphic design
+- Video editing
+- Social media content creation
+- Computer hardware and networking
+- Presentation making
+- Communication and counseling
+
+Courses / Expertise:
+Show a card for each major course or area:
+- AI Tools and Automation
+- Advanced Excel
+- Data Analysis
+- Financial Analysis and Accounting
+- Web Development
+- Graphic Design
+- Digital Skills
+- Content Creation
+
+Each course card should include:
+- Short description
+- Duration
+- Outcome
+- Practical focus
+
+Achievements Section:
+Include achievements and strengths such as:
+- Teaching experience
+- Course building
+- Content creation
+- Social media work
+- Accounting / office coordination
+- Sports background
+- Leadership and mentoring
+
+Sports Background:
+Mention:
+- Football enthusiast/player
+- Taekwondo player in college
+- Karate experience
+
+Work Experience Timeline:
+Include timeline cards for:
+- Teacher roles
+- Lab assistant
+- Office coordinator
+- Accounts / finance support
+- Content editing and social media work
+- Technical support roles
+
+Documents Section:
+Allow display cards for:
+- Resume PDF
+- Biodata PDF
+- Certificates
+- Portfolio documents
+- Course list
+- Achievement documents
+- Project files
+
+Vision and Mission:
+Vision:
+To build a practical education ecosystem where learning creates real-life transformation.
+
+Mission:
+To simplify complex knowledge using interactive learning, emotional intelligence, AI tools, and structured systems.
+
+Values:
+- Honesty
+- Growth
+- Practical learning
+- Discipline
+- Responsibility
+- Compassion
+- Innovation
+- Respect for learners
+
+Ongoing Section:
+Show what is currently in progress:
+- Building AI-integrated learning systems
+- Expanding personal portfolio
+- Creating course content
+- Developing automation workflows using n8n
+- Improving digital identity and branding
+
+Upcoming Section:
+Show future plans:
+- New courses
+- More student-friendly learning content
+- AI chatbot improvements
+- Digital teaching system
+- Linked portfolio and document library
+- Dashboard upgrades
+
+Contact Section:
+Include:
+- Email
+- Phone
+- WhatsApp button
+- YouTube link
+- Social buttons
+
+Extra Functional Features:
+- Sticky navigation
+- Smooth scrolling
+- Scroll animations
+- Mobile menu
+- Search or filter inside sections if needed
+- Download buttons
+- Card-based layout
+- Elegant icons
+- Hover glow effects
+- Clean typography
+
+Optional Admin-Like Features:
+- “View as visitor” mode
+- “Dashboard mode”
+- “Latest updates” panel
+- “Featured documents” panel
+- “Pinned achievements” panel
+
+Technical Requirements:
+- Build in React or HTML/CSS/JavaScript
+- Use modern component-based structure
+- Make code clean and maintainable
+- Add placeholder data in structured arrays or JSON
+- Keep backend integration points ready for future n8n API connection
+- Use a modular folder structure
+
+Overall Style:
+- Premium
+- Intelligent
+- Human
+- Clean
+- Professional
+- Modern AI-era identity
+- Not too flashy
+- Not too crowded
+- Balanced and elegant
+
+Final output should be a fully working, polished personal AI portfolio dashboard website with chatbot UI, quick action buttons, document cards, timeline sections, and a modern futuristic look.

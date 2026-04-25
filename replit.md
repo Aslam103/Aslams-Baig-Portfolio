@@ -16,6 +16,10 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - **API codegen**: Orval (from OpenAPI spec)
 - **Build**: esbuild (CJS bundle)
 
+## Artifacts
+
+- `artifacts/portfolio` — Mirza Aslam Baig's personal AI portfolio + dashboard (react-vite, single-page, dark-first, frontend-only). Chatbot UI is wired to fall back to a local rule-based responder; set `VITE_N8N_WEBHOOK_URL` to connect it to an n8n webhook later. Resume PDFs live in `artifacts/portfolio/public/documents/`.
+
 ## Key Commands
 
 - `pnpm run typecheck` — full typecheck across all packages

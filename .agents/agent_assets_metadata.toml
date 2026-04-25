@@ -1,0 +1,14 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "M7zOefiMS9biXpmE73mv6"
+uri = "file://artifacts/portfolio/src/assets/hero-avatar.png"
+type = "image"
+title = "MAB monogram AI glow avatar"
+
+[[generated]]
+id = "MfkUk-e9sn2ZUwx4rCn_y"
+uri = "file://artifacts/portfolio/src/assets/bg-glow.png"
+type = "image"
+title = "Subtle grid glow texture"
