@@ -18,7 +18,7 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 
 ## Artifacts
 
-- `artifacts/portfolio` — Mirza Aslam Baig's personal AI portfolio + dashboard (react-vite, single-page, dark-first, frontend-only). Chatbot UI is wired to fall back to a local rule-based responder; set `VITE_N8N_WEBHOOK_URL` to connect it to an n8n webhook later. Resume PDFs live in `artifacts/portfolio/public/documents/`.
+- `artifacts/portfolio` — Mirza Aslam Baig's personal AI portfolio + ecosystem dashboard (react-vite, single-page, dark-first, frontend-only). Data-driven: all content lives in `src/data/` (personalInfo, projects, courses, experience, achievements, systems, learningPath, socialLinks, qrLinks). Sections: Hero (with floating stat badges + specialty chips), Projects, Skills, CurrentRole (TWG International), Courses (categorized: Core/Specialization/Modular with tabs filter), LearningPath (Beginner→Expert progression), Experience, TeachingPhilosophy, Innovation (AI Systems), Ongoing, Upcoming, Documents, SocialEcosystem (GitHub/YouTube/Instagram/Facebook + QR codes for Portfolio/YouTube/WhatsApp), Chatbot, Contact. Chatbot falls back to a local rule-based responder; set `VITE_N8N_WEBHOOK_URL` to connect it to an n8n webhook later. **Privacy hard rule**: phone (`+91 7387292087`, `+91 9423292087`) and email (`mbaslambaig9@gmail.com`) live ONLY in `src/data/personalInfo.ts` and are exposed only inside Contact.tsx's blur+reveal dialog. Resume PDFs in `artifacts/portfolio/public/documents/`. QR codes generated client-side via `qrcode` package.
 
 ## Key Commands
 

@@ -19,7 +19,7 @@ const SUGGESTIONS = [
 
 export function ChatbotSection() {
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: "assistant", content: "Hello! I'm the AI assistant for Mirza Aslam Baig. I can tell you about his work at TWG International, course offerings, achievements, and systems. How can I help you today?" }
+    { role: "assistant", content: "Hello! I'm the AI assistant for Mirza Aslam Baig. I can tell you about his work at TWG International, course offerings, learning paths, achievements, and systems. How can I help you today?" }
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -53,15 +53,15 @@ export function ChatbotSection() {
   return (
     <section id="chatbot" className="py-24 relative">
       <div className="container mx-auto px-4 max-w-4xl relative z-10">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground flex items-center gap-3">
               <Bot className="w-8 h-8 text-cyan-400" />
               AI Assistant
             </h2>
-            <p className="text-muted-foreground mt-2">Ask me anything about Aslam's portfolio and experience.</p>
+            <p className="text-muted-foreground mt-2">Ask me anything about Aslam's portfolio, courses, and experience.</p>
           </div>
-          <Badge variant="outline" className={`px-3 py-1 ${hasWebhook ? 'border-green-500/50 text-green-400' : 'border-muted text-muted-foreground'}`}>
+          <Badge variant="outline" className={`w-fit px-3 py-1 ${hasWebhook ? 'border-green-500/50 text-green-400' : 'border-muted text-muted-foreground'}`}>
             {hasWebhook ? (
               <span className="flex items-center gap-2"><CheckCircle2 className="w-3 h-3" /> Connected to n8n</span>
             ) : (
@@ -122,7 +122,7 @@ export function ChatbotSection() {
                   key={i}
                   onClick={() => handleSend(s)}
                   disabled={isLoading}
-                  className="text-xs px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
+                  className="text-xs px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 text-left"
                   data-testid={`btn-suggestion-${i}`}
                 >
                   {s}

@@ -1,52 +1,8 @@
 import { motion } from "framer-motion";
-import { Brain, BarChart3, Code2, Workflow, Users, Video, LineChart, Target, Zap, Award, Trophy } from "lucide-react";
+import { FolderGit2, AlertCircle, ArrowUpRight, Trophy } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-
-const HIGH_VALUE_PROJECTS = [
-  {
-    title: "AI-integrated Course Design",
-    description: "Designing curricula that blend AI tools with practical learning.",
-    icon: Brain,
-    tag: "Education Systems",
-    color: "cyan"
-  },
-  {
-    title: "Data Analytics Training Programs",
-    description: "Building structured training tracks for analytics learners.",
-    icon: BarChart3,
-    tag: "Curriculum",
-    color: "blue"
-  },
-  {
-    title: "Full Stack Java Teaching",
-    description: "Mentoring students through end-to-end Java development.",
-    icon: Code2,
-    tag: "Mentorship",
-    color: "violet"
-  },
-  {
-    title: "Automation Workflows",
-    description: "Building self-hosted automation pipelines with n8n + Docker.",
-    icon: Workflow,
-    tag: "Systems",
-    color: "green"
-  },
-  {
-    title: "Student Mentoring Systems",
-    description: "Structured one-on-one and cohort mentoring programs.",
-    icon: Users,
-    tag: "Mentorship",
-    color: "yellow"
-  },
-  {
-    title: "Content Creation",
-    description: "Long-form educational content and video production.",
-    icon: Video,
-    tag: "Media",
-    color: "pink"
-  }
-];
+import { projects } from "@/data/projects";
 
 const LEGACY_WINS = [
   "20% reconciliation improvement via Focus + Google Sheets",
@@ -79,31 +35,57 @@ export function Projects() {
           />
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-          {HIGH_VALUE_PROJECTS.map((proj, idx) => {
-            const Icon = proj.icon;
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16 items-stretch">
+          {projects.map((proj, idx) => {
+            const isWide = idx === projects.length - 1 && projects.length % 2 !== 0 && projects.length % 3 !== 0;
             return (
               <motion.div
-                key={idx}
+                key={proj.id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="h-full"
+                className={`h-full ${isWide ? 'lg:col-span-2' : ''}`}
               >
-                <Card className={`glass-panel h-full hover:-translate-y-2 transition-transform duration-300 border-white/5 hover:border-${proj.color}-500/40 group overflow-hidden`}>
-                  <div className={`h-1 w-full bg-gradient-to-r from-${proj.color}-500/50 to-transparent`} />
-                  <CardHeader className="pb-3 relative">
-                    <div className={`absolute top-4 right-4 w-10 h-10 rounded-xl bg-${proj.color}-500/10 flex items-center justify-center group-hover:bg-${proj.color}-500/20 transition-colors`}>
-                      <Icon className={`w-5 h-5 text-${proj.color}-400`} />
+                <Card className={`glass-panel h-full flex flex-col hover:-translate-y-1 hover:shadow-2xl hover:shadow-cyan-500/10 transition-all duration-300 border-white/5 hover:border-cyan-500/30 group overflow-hidden`}>
+                  <div className={`h-1 w-full bg-gradient-to-r from-cyan-500/50 to-transparent`} />
+                  <CardHeader className="pb-2">
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {proj.tags.map((tag, tIdx) => (
+                        <Badge key={tIdx} variant="outline" className="bg-white/5 border-white/10 text-[10px] uppercase tracking-wider text-muted-foreground">{tag}</Badge>
+                      ))}
                     </div>
-                    <Badge variant="outline" className={`w-fit mb-3 bg-white/5 border-white/10 text-xs`}>{proj.tag}</Badge>
-                    <CardTitle className="text-xl pr-12">{proj.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      {proj.description}
+                    <CardTitle className="text-xl flex items-start justify-between gap-4">
+                      {proj.title}
+                      <FolderGit2 className="w-5 h-5 text-cyan-400 shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" />
+                    </CardTitle>
+                    <p className="text-sm text-foreground/80 mt-2 line-clamp-2">
+                      {proj.summary}
                     </p>
+                  </CardHeader>
+                  <CardContent className="flex-1 flex flex-col pt-2">
+                    <div className="flex flex-wrap gap-1.5 mb-4">
+                      {proj.tools.map((tool, tIdx) => (
+                        <span key={tIdx} className="text-[10px] font-mono px-2 py-1 rounded bg-black/40 border border-white/5 text-muted-foreground">
+                          {tool}
+                        </span>
+                      ))}
+                    </div>
+                    
+                    <div className="mt-auto space-y-3 pt-4 border-t border-white/5">
+                      <div>
+                        <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">
+                          <AlertCircle className="w-3 h-3" /> Problem
+                        </div>
+                        <p className="text-sm text-foreground/90">{proj.problem}</p>
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-bold text-cyan-400/80 mb-1">
+                          <ArrowUpRight className="w-3 h-3" /> Impact
+                        </div>
+                        <p className="text-sm font-medium text-cyan-400 leading-snug">{proj.impact}</p>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               </motion.div>

@@ -43,11 +43,17 @@ function getLocalResponse(message: string): string {
   if (lowerMsg.includes("twg") || lowerMsg.includes("technoworld")) {
     return "I am currently leading Technical Training & Learning Systems at TWG International (Technoworld Group) in Abids, Hyderabad. You can visit them at technoworldgroup.com.";
   }
-  if (lowerMsg.includes("course") || lowerMsg.includes("offer") || lowerMsg.includes("teach")) {
-    return "I offer outcomes-first courses in Full Stack Java, Advanced Data Analytics, AI Tools & Automation (n8n), Advanced Excel, Financial Analysis, and Digital Skills.";
+  if (lowerMsg.includes("course") || lowerMsg.includes("offer") || lowerMsg.includes("teach") || lowerMsg.includes("specialization") || lowerMsg.includes("modular")) {
+    return "I offer categorized courses:\n- Core: ICFAI, FAME, Data Analytics, Full Stack Java/MERN.\n- Specializations: Digital Marketing, Graphic Designing, Advanced Finance.\n- Modular: Power BI, Frontend Development, VIBE.\nAll are outcome-driven and highly practical.";
   }
-  if (lowerMsg.includes("achievement") || lowerMsg.includes("success") || lowerMsg.includes("projects")) {
-    return "Some key projects include AI-integrated course design, automation workflows via n8n and Docker, and quantitative wins like reducing financial discrepancies by 20% at Zakat Center and boosting social engagement by 30%.";
+  if (lowerMsg.includes("learning path") || lowerMsg.includes("progression") || lowerMsg.includes("start")) {
+    return "The learning path is structured by progression:\n1. Beginner: ICFAI\n2. Intermediate: FAME\n3. Advanced: Data Analytics\n4. Expert: Full Stack / AI Systems.\nStart where you are, climb where you want.";
+  }
+  if (lowerMsg.includes("achievement") || lowerMsg.includes("success") || lowerMsg.includes("projects") || lowerMsg.includes("resume parser") || lowerMsg.includes("chatbot")) {
+    return "Key projects include: AI Resume Parser System, AI Chatbot System (n8n/Docker), Course Ecosystem Builder, Data Analytics Training System, and Full Stack Learning System. My goal is to build automated, scalable education tools.";
+  }
+  if (lowerMsg.includes("innovation") || lowerMsg.includes("system") || lowerMsg.includes("docker") || lowerMsg.includes("n8n")) {
+    return "My AI Systems & Innovations focus on Chatbot Architecture, n8n Workflows for course ops, Docker Setups for self-hosting, Automation Logic for accounting, and modular Learning Systems.";
   }
   if (lowerMsg.includes("approach") || lowerMsg.includes("philosophy") || lowerMsg.includes("vision")) {
     return "My teaching approach is highly practical. I architect learning experiences that combine AI tooling, data analytics, and structured automation—translating complex technical concepts into outcomes students actually use.";
@@ -55,12 +61,15 @@ function getLocalResponse(message: string): string {
   if (lowerMsg.includes("working on") || lowerMsg.includes("ongoing") || lowerMsg.includes("building")) {
     return "Right now I am focused on AI learning systems design, n8n automation pipelines for cohort management, and shaping full stack training at TWG International.";
   }
+  if (lowerMsg.includes("social") || lowerMsg.includes("youtube") || lowerMsg.includes("instagram") || lowerMsg.includes("github") || lowerMsg.includes("facebook") || lowerMsg.includes("channel")) {
+    return "You can find me on GitHub (@Aslam103), YouTube (Apex Aslam and Pages of Impact), Instagram (@pages_of_impact), and Facebook community channels. Check the Connect & Content Ecosystem section for direct links.";
+  }
   if (lowerMsg.includes("sport") || lowerMsg.includes("football") || lowerMsg.includes("karate") || lowerMsg.includes("taekwondo")) {
     return "I'm a football enthusiast, have competed in Taekwondo at the college level, and have experience in Karate. Sports have taught me discipline and resilience.";
   }
-  if (lowerMsg.includes("contact") || lowerMsg.includes("email") || lowerMsg.includes("phone") || lowerMsg.includes("connect")) {
-    return "Tap the Connect button in the nav or contact section to reveal contact options privately.";
+  if (lowerMsg.includes("contact") || lowerMsg.includes("email") || lowerMsg.includes("phone") || lowerMsg.includes("number") || lowerMsg.includes("connect")) {
+    return "For privacy, please use the Connect button on the Contact section to reveal Mirza's contact details.";
   }
 
-  return "That's an interesting question! I am an AI Educator, Course Designer, and System Builder. I specialize in technical training, AI automations, and practical learning. Could you ask me about TWG International, my courses, or how to connect?";
+  return "That's an interesting question! I am an AI Educator, Course Designer, and System Builder. I specialize in technical training, AI automations, and practical learning. Could you ask me about TWG International, my courses, my learning path, or how to connect?";
 }

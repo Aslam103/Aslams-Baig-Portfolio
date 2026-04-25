@@ -5,14 +5,17 @@ import { Projects } from "@/components/portfolio/Projects";
 import { Skills } from "@/components/portfolio/Skills";
 import { CurrentRole } from "@/components/portfolio/CurrentRole";
 import { Courses } from "@/components/portfolio/Courses";
+import { LearningPath } from "@/components/portfolio/LearningPath";
 import { Experience } from "@/components/portfolio/Experience";
 import { TeachingPhilosophy } from "@/components/portfolio/TeachingPhilosophy";
 import { Innovation } from "@/components/portfolio/Innovation";
 import { Ongoing } from "@/components/portfolio/Ongoing";
 import { Upcoming } from "@/components/portfolio/Upcoming";
 import { Documents } from "@/components/portfolio/Documents";
+import { SocialEcosystem } from "@/components/portfolio/SocialEcosystem";
 import { ChatbotSection } from "@/components/portfolio/Chatbot";
 import { Contact, Footer } from "@/components/portfolio/Contact";
+import { personalInfo } from "@/data/personalInfo";
 
 export default function Home() {
   const [dashboardMode, setDashboardMode] = useState(false);
@@ -41,12 +44,14 @@ export default function Home() {
             <Skills />
             <CurrentRole />
             <Courses />
+            <LearningPath />
             <Experience />
             <TeachingPhilosophy />
             <Innovation />
             <Ongoing />
             <Upcoming />
             <Documents />
+            <SocialEcosystem />
           </div>
           
           <div className={dashboardMode ? 'pt-20 space-y-8 sticky top-0 h-screen overflow-y-auto pb-20 custom-scrollbar' : ''}>
@@ -63,9 +68,10 @@ export default function Home() {
                     <button onClick={() => document.querySelector('#courses')?.scrollIntoView({ behavior: 'smooth' })} className="text-left px-3 py-2 rounded bg-white/5 hover:bg-white/10 transition-colors">Explore Courses</button>
                     <button onClick={() => document.querySelector('#chatbot')?.scrollIntoView({ behavior: 'smooth' })} className="text-left px-3 py-2 rounded bg-white/5 hover:bg-white/10 transition-colors">Chat with AI</button>
                     <button onClick={() => document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' })} className="text-left px-3 py-2 rounded bg-white/5 hover:bg-white/10 transition-colors">Achievements</button>
+                    <button onClick={() => document.querySelector('#social')?.scrollIntoView({ behavior: 'smooth' })} className="text-left px-3 py-2 rounded bg-white/5 hover:bg-white/10 transition-colors">Social Links</button>
                     <button onClick={() => document.querySelector('#documents')?.scrollIntoView({ behavior: 'smooth' })} className="text-left px-3 py-2 rounded bg-white/5 hover:bg-white/10 transition-colors">Documents</button>
                     <button onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })} className="text-left px-3 py-2 rounded bg-white/5 hover:bg-white/10 transition-colors">Connect</button>
-                    <button onClick={() => window.open('https://technoworldgroup.com', '_blank')} className="text-left px-3 py-2 rounded bg-white/5 hover:bg-white/10 transition-colors">Visit Company</button>
+                    <button onClick={() => window.open(personalInfo.company.url, '_blank')} className="text-left px-3 py-2 rounded bg-white/5 hover:bg-white/10 transition-colors">Visit Company</button>
                     <button onClick={() => window.open(`${import.meta.env.BASE_URL}documents/Aslam_Resume.pdf`, '_blank')} className="text-left px-3 py-2 rounded bg-white/5 hover:bg-white/10 transition-colors">Download CV</button>
                   </div>
                 </div>

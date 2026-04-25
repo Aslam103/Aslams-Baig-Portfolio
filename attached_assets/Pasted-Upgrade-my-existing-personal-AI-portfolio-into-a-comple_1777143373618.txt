@@ -1,0 +1,275 @@
+Upgrade my existing personal AI portfolio into a complete high-impact personal ecosystem dashboard.
+
+This is NOT a resume website. It must represent:
+AI Educator + System Builder + Course Architect + Content Creator
+
+---
+
+## 🔐 1. DATA ARCHITECTURE (CORE RULE)
+
+Create centralized structured data files:
+
+* personalInfo
+* courses (from Google Sheet)
+* projects
+* experience
+* socialLinks
+* achievements
+* systems
+
+All UI must be dynamically rendered from this data.
+
+---
+
+## 📊 2. GOOGLE SHEET COURSE INTEGRATION (CRITICAL)
+
+Read course data from my Google Sheet and DO NOT display raw data.
+
+Transform and categorize into:
+
+1. Core Programs
+2. Specializations
+3. Modular Courses
+
+Core Programs:
+
+* ICFAI (Computer Foundation with AI)
+* FAME (Financial Analysis & Management)
+* Data Analytics Program
+* Full Stack Java / MERN
+
+Specializations:
+
+* Digital Marketing
+* Graphic Designing
+* Advanced Finance
+
+Modular Courses:
+
+* Power BI
+* Frontend Development
+* VIBE (Design & Branding)
+
+Each course card must include:
+
+* Course Name
+* Duration
+* Key Topics (cleaned, not raw)
+* Outcome (job-ready / practical)
+* Level (Beginner / Advanced)
+
+Add filter system:
+All / Core / Specialization / Modular
+
+---
+
+## 👤 3. PERSONAL INFO (CONTROLLED DISPLAY)
+
+Name: Mirza Aslam Baig
+Location: Hyderabad, India
+Company: TWG International (Technoworld Group)
+Phone: 7387292087
+GitHub: https://github.com/Aslam103
+
+Rules:
+
+* Do NOT show phone/email in hero
+* Show only inside Contact or via "Reveal Contact"
+* Keep identity short and clean
+
+---
+
+## 🚀 4. HERO SECTION
+
+Title:
+AI Educator | System Builder | Course Designer
+
+Tagline:
+Learn → Apply → Transform
+
+Buttons:
+
+* View Projects
+* Explore Courses
+* Chat with AI
+* View Achievements
+* Contact Me
+* Visit Company
+
+---
+
+## 🔥 5. PROJECTS (MOST IMPORTANT)
+
+Create strong project cards:
+
+1. AI Resume Parser System
+   Built using VS Code, Windsurf, Copilot, ChatGPT
+   Structured intelligent resume parsing
+
+2. AI Chatbot System
+   Built using n8n + Docker
+   Handles queries + automation workflows
+
+3. Course Ecosystem Builder
+   Structured learning systems across domains
+
+4. Data Analytics Training
+   Real-world datasets + dashboards
+
+5. Full Stack Learning System
+   Frontend + backend training system
+
+Each must show:
+
+* Tools
+* Problem solved
+* Impact
+
+---
+
+## 🧠 6. AI SYSTEMS & AUTOMATION
+
+Add section:
+
+"AI Systems & Innovations"
+
+Include:
+
+* Chatbot architecture
+* n8n workflows
+* Docker setup
+* Automation logic
+* Learning systems
+
+---
+
+## 📚 7. COURSES SECTION (FROM SHEET)
+
+Use categorized courses (from Step 2)
+
+Add:
+
+* Clean UI cards
+* Filters
+* Icons
+* No raw Excel formatting
+
+---
+
+## 🧭 8. LEARNING PATH SYSTEM (NEW 🔥)
+
+Create progression:
+
+Beginner → ICFAI
+Intermediate → FAME
+Advanced → Data Analytics
+Expert → Full Stack / AI Systems
+
+Show visually (timeline or flow)
+
+---
+
+## 🏢 9. CURRENT ROLE
+
+TWG International (Technoworld Group)
+Abids, Hyderabad
+
+Show contribution, not just job title
+
+---
+
+## 📈 10. TIMELINE
+
+* Latest first
+* Show impact
+* Clean UI
+* Remove clutter
+
+---
+
+## 🌐 11. SOCIAL MEDIA ECOSYSTEM
+
+Create:
+
+"Connect & Content Ecosystem"
+
+Include:
+
+GitHub:
+https://github.com/Aslam103
+
+YouTube:
+https://youtube.com/@apex_aslam
+https://youtube.com/@pagesofimpact
+
+Instagram:
+https://www.instagram.com/pages_of_impact
+
+Facebook:
+https://www.facebook.com/share/18gqSwo21u/
+https://www.facebook.com/share/1BvmkzrijK/
+https://www.facebook.com/share/1H7jpfgson/
+
+Rules:
+
+* Show as cards
+* Add preview thumbnails (OpenGraph or embed)
+* Add buttons (Visit / Subscribe / Follow)
+
+---
+
+## 📱 12. QR CODE SYSTEM
+
+Generate QR codes for:
+
+* Portfolio
+* YouTube
+* WhatsApp
+
+---
+
+## 📞 13. CONTACT SECTION
+
+Include:
+
+* Phone
+* Email
+* Location
+* Company
+
+Buttons:
+
+* Call
+* WhatsApp
+* Email
+* Visit Company
+
+---
+
+## 🎯 14. UI & UX
+
+* Keep current design
+* Improve spacing
+* Add hover glow
+* Smooth animations
+* Glassmorphism
+* Clean typography
+
+---
+
+## ⚙️ 15. TECH STRUCTURE
+
+* Modular components
+* Data-driven rendering
+* Clean folders
+* Easy customization
+* Future n8n API integration ready
+
+---
+
+## 🎯 FINAL GOAL
+
+* Not a resume → SYSTEM BUILDER DASHBOARD
+* Show real work + systems + impact
+* Impress students + companies
+* Maintain clean + human + professional balance

@@ -1,78 +1,40 @@
-import { motion } from "framer-motion";
-import { BookOpen, Clock, Target, PenTool, Brain, Database, Layout, Globe, Video, Calculator, Code } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { BookOpen, Target, Layout, Monitor, Calculator, Database, Code, Globe, PenTool, TrendingUp, PieChart, Sparkles } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { courses, CourseCategory } from "@/data/courses";
 
-const COURSES = [
-  {
-    title: "Full Stack Java",
-    description: "End-to-end Java development for production systems. Master the full stack from backend logic to frontend UI.",
-    outcome: "Deploy complete Java web applications",
-    practical: "Build real-world production systems",
-    skills: ["Java", "Spring Boot", "React", "SQL", "APIs"],
-    icon: Code,
-    color: "violet"
-  },
-  {
-    title: "Advanced Data Analytics",
-    description: "From spreadsheets to dashboards: comprehensive data cleaning, modeling, and visualization techniques.",
-    outcome: "Create actionable data dashboards",
-    practical: "Hands-on data modeling & reporting",
-    skills: ["SQL", "PowerBI / Tableau", "Data Cleaning", "Modeling"],
-    icon: Database,
-    color: "blue"
-  },
-  {
-    title: "AI Tools & Automation",
-    description: "Practical AI tooling that integrates into daily workflows. Master n8n for building complex pipelines.",
-    outcome: "Build independent automation pipelines",
-    practical: "Includes Docker setup & webhook integrations",
-    skills: ["n8n", "Docker", "Prompt Engineering", "Webhooks"],
-    icon: Brain,
-    color: "cyan"
-  },
-  {
-    title: "Advanced Excel",
-    description: "Deep dive into functions, complex modeling, dashboards, and reporting at expert depth.",
-    outcome: "Automate complex reporting tasks",
-    practical: "Work with real-world financial datasets",
-    skills: ["Macros", "Pivot Tables", "VLOOKUP/INDEX", "Dashboards"],
-    icon: Calculator,
-    color: "green"
-  },
-  {
-    title: "Financial Analysis & Accounting",
-    description: "Learn Tally, FOCUS 9, reconciliation, and analytical reporting with real accounting principles.",
-    outcome: "Manage full-cycle accounting",
-    practical: "Reconciliation & discrepancy resolution",
-    skills: ["Tally ERP", "FOCUS 9", "Reconciliation", "Auditing"],
-    icon: Database,
-    color: "yellow"
-  },
-  {
-    title: "Digital Skills",
-    description: "Foundational digital literacy and marketing skills essential for modern modern workplaces.",
-    outcome: "Execute multi-channel digital strategies",
-    practical: "Live campaign management",
-    skills: ["SEO/SEM", "Social Media", "Digital Literacy", "Campaigns"],
-    icon: Globe,
-    color: "orange"
-  },
-  {
-    title: "Content Creation",
-    description: "Educational video, graphics, and long-form content production for digital distribution.",
-    outcome: "Produce broadcast-ready content",
-    practical: "Edit promotional success stories",
-    skills: ["Premiere", "DaVinci", "Photoshop", "Storyboarding"],
-    icon: Video,
-    color: "pink"
-  }
-];
+const ICONS: Record<string, React.ElementType> = {
+  "monitor": Monitor,
+  "calculator": Calculator,
+  "database": Database,
+  "code": Code,
+  "globe": Globe,
+  "pen-tool": PenTool,
+  "trending-up": TrendingUp,
+  "pie-chart": PieChart,
+  "layout": Layout,
+  "sparkles": Sparkles,
+};
+
+const CATEGORY_COLORS: Record<CourseCategory, { border: string; bg: string; text: string }> = {
+  core: { border: "border-cyan-500/30", bg: "bg-cyan-500/10", text: "text-cyan-400" },
+  specialization: { border: "border-violet-500/30", bg: "bg-violet-500/10", text: "text-violet-400" },
+  modular: { border: "border-amber-500/30", bg: "bg-amber-500/10", text: "text-amber-400" },
+};
 
 export function Courses() {
+  const [activeTab, setActiveTab] = useState<string>("all");
+
+  const filteredCourses = activeTab === "all" 
+    ? courses 
+    : courses.filter(c => c.category === activeTab);
+
   return (
     <section id="courses" className="py-24 relative bg-black/20">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -98,64 +60,77 @@ export function Courses() {
           </motion.p>
         </div>
 
+        <div className="flex justify-center mb-10">
+          <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab} className="w-full max-w-2xl">
+            <TabsList className="grid w-full grid-cols-4 bg-white/5 border border-white/10 h-auto p-1">
+              <TabsTrigger value="all" className="rounded-md data-[state=active]:bg-white/10 data-[state=active]:text-white py-2.5">All</TabsTrigger>
+              <TabsTrigger value="core" className="rounded-md data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400 py-2.5">Core</TabsTrigger>
+              <TabsTrigger value="specialization" className="rounded-md data-[state=active]:bg-violet-500/20 data-[state=active]:text-violet-400 py-2.5">Specialization</TabsTrigger>
+              <TabsTrigger value="modular" className="rounded-md data-[state=active]:bg-amber-500/20 data-[state=active]:text-amber-400 py-2.5">Modular</TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+
         <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {COURSES.map((course, idx) => {
-            const Icon = course.icon;
-            return (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.05 }}
-                className="h-full"
-              >
-                <Card className="glass-panel h-full flex flex-col hover:border-cyan-500/30 hover:-translate-y-1 transition-all duration-300 group overflow-hidden border-white/5">
-                  <div className={`h-2 w-full bg-gradient-to-r from-${course.color}-500/50 to-transparent`} />
-                  <CardHeader className="pb-3 relative">
-                    <div className="absolute top-4 right-4 w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
-                      <Icon className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors" />
-                    </div>
-                    <CardTitle className="text-xl pr-10">{course.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="flex-1 flex flex-col pb-4">
-                    <p className="text-sm text-muted-foreground mb-5 flex-1">
-                      {course.description}
-                    </p>
-                    
-                    <div className="space-y-3">
-                      <div>
-                        <div className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Outcome</div>
-                        <div className="flex items-start gap-2 text-sm text-foreground">
-                          <Target className="w-4 h-4 text-violet-400 mt-0.5 shrink-0" />
-                          <span>{course.outcome}</span>
+          <AnimatePresence mode="popLayout">
+            {filteredCourses.map((course) => {
+              const Icon = ICONS[course.iconHint] || BookOpen;
+              const colorTheme = CATEGORY_COLORS[course.category];
+              
+              return (
+                <motion.div
+                  key={course.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.3 }}
+                  className="h-full"
+                >
+                  <Card className="glass-panel h-full flex flex-col hover:-translate-y-1 transition-all duration-300 group overflow-hidden border-white/5 hover:border-white/20">
+                    <CardHeader className="pb-3 pt-5 relative">
+                      <div className="flex justify-between items-start mb-3">
+                        <div className={`px-2.5 py-1 text-[10px] uppercase font-bold tracking-wider rounded-full border ${colorTheme.border} ${colorTheme.bg} ${colorTheme.text}`}>
+                          {course.category}
                         </div>
+                        <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
+                          <Icon className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                        </div>
+                      </div>
+                      <CardTitle className="text-xl leading-tight">{course.name}</CardTitle>
+                      <div className="flex items-center gap-3 text-xs text-muted-foreground mt-2 font-mono">
+                        <span className="flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-white/30" />
+                          {course.level}
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-white/30" />
+                          {course.duration}
+                        </span>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="flex-1 flex flex-col pt-0 pb-5">
+                      <div className="flex flex-wrap gap-1.5 mb-5 mt-2">
+                        {course.keyTopics.map((topic, i) => (
+                          <span key={i} className="text-[10px] px-2 py-1 rounded bg-white/5 border border-white/10 text-muted-foreground hover:bg-white/10 transition-colors">
+                            {topic}
+                          </span>
+                        ))}
                       </div>
                       
-                      <div>
-                        <div className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Practical Focus</div>
-                        <div className="flex items-start gap-2 text-sm text-foreground">
-                          <PenTool className="w-4 h-4 mt-0.5 shrink-0 text-gold-400" style={{ color: 'hsl(45 80% 60%)' }} />
-                          <span>{course.practical}</span>
+                      <div className="mt-auto pt-4 border-t border-white/5">
+                        <div className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1.5">Outcome</div>
+                        <div className="flex items-start gap-2 text-sm">
+                          <Target className={`w-4 h-4 mt-0.5 shrink-0 ${colorTheme.text}`} />
+                          <span className={`font-medium ${colorTheme.text} leading-snug`}>{course.outcome}</span>
                         </div>
                       </div>
-
-                      <div>
-                        <div className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1 mt-3">Skills Gained</div>
-                        <div className="flex flex-wrap gap-1.5 mt-1">
-                          {course.skills.map((skill, i) => (
-                            <span key={i} className="text-[10px] px-2 py-1 rounded bg-white/5 border border-white/10 text-muted-foreground">
-                              {skill}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            );
-          })}
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
         </div>
       </div>
     </section>
