@@ -20,6 +20,6 @@ export const qrLinks: QRLink[] = [
   {
     id: "whatsapp",
     label: "WhatsApp",
-    url: "https://wa.me/919423292087"
+    url: "https://wa.me/917387292087"
   }
 ];

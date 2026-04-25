@@ -16,6 +16,7 @@ import { SocialEcosystem } from "@/components/portfolio/SocialEcosystem";
 import { ChatbotSection } from "@/components/portfolio/Chatbot";
 import { Contact, Footer } from "@/components/portfolio/Contact";
 import { personalInfo } from "@/data/personalInfo";
+import { downloadResumePdf } from "@/lib/generateResume";
 
 export default function Home() {
   const [dashboardMode, setDashboardMode] = useState(false);
@@ -72,7 +73,7 @@ export default function Home() {
                     <button onClick={() => document.querySelector('#documents')?.scrollIntoView({ behavior: 'smooth' })} className="text-left px-3 py-2 rounded bg-white/5 hover:bg-white/10 transition-colors">Documents</button>
                     <button onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })} className="text-left px-3 py-2 rounded bg-white/5 hover:bg-white/10 transition-colors">Connect</button>
                     <button onClick={() => window.open(personalInfo.company.url, '_blank')} className="text-left px-3 py-2 rounded bg-white/5 hover:bg-white/10 transition-colors">Visit Company</button>
-                    <button onClick={() => window.open(`${import.meta.env.BASE_URL}documents/Aslam_Resume.pdf`, '_blank')} className="text-left px-3 py-2 rounded bg-white/5 hover:bg-white/10 transition-colors">Download CV</button>
+                    <button onClick={() => downloadResumePdf()} className="text-left px-3 py-2 rounded bg-white/5 hover:bg-white/10 transition-colors" data-testid="btn-quick-download-resume">Download Resume</button>
                   </div>
                 </div>
 

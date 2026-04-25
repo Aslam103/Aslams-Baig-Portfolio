@@ -5,6 +5,13 @@ import { SiWhatsapp, SiYoutube, SiInstagram } from "react-icons/si";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { personalInfo } from "@/data/personalInfo";
+
+const PHONE_DISPLAY = personalInfo.private.phone;
+const PHONE_DIGITS = personalInfo.private.phoneDigits;
+const EMAIL = personalInfo.private.email;
+const WHATSAPP_URL = `https://wa.me/${personalInfo.private.whatsapp}`;
+const LOCATION = personalInfo.location;
 
 export function Contact() {
   const [revealed, setRevealed] = useState(false);
@@ -37,7 +44,7 @@ export function Contact() {
             <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-6">
               <MapPin className="w-6 h-6 text-muted-foreground" />
             </div>
-            <h3 className="text-2xl font-bold mb-2">Hyderabad, India</h3>
+            <h3 className="text-2xl font-bold mb-2">{LOCATION}</h3>
             <p className="text-muted-foreground mb-8">Languages: English, Hindi, Marathi, Urdu, Arabic (Quranic)</p>
 
             <Dialog onOpenChange={(open) => !open && setRevealed(false)}>
@@ -59,7 +66,7 @@ export function Contact() {
                   {/* WhatsApp is always accessible without blur */}
                   <Button 
                     className="w-full h-14 text-lg bg-[#25D366] hover:bg-[#128C7E] text-white border-none justify-between px-6"
-                    onClick={() => window.open('https://wa.me/919423292087', '_blank')}
+                    onClick={() => window.open(WHATSAPP_URL, '_blank')}
                     data-testid="btn-whatsapp"
                   >
                     <span className="flex items-center gap-3">
@@ -85,12 +92,12 @@ export function Contact() {
                       <div className="flex flex-col gap-2">
                         <div className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Email Address</div>
                         <div className="flex items-center justify-between bg-white/5 rounded-lg p-3 border border-white/10">
-                          <span className="font-medium">mbaslambaig9@gmail.com</span>
+                          <span className="font-medium">{EMAIL}</span>
                           <div className="flex gap-2">
-                            <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-white/10" onClick={() => handleCopy("mbaslambaig9@gmail.com", "email")} disabled={!revealed}>
+                            <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-white/10" onClick={() => handleCopy(EMAIL, "email")} disabled={!revealed} data-testid="btn-copy-email">
                               {copiedField === "email" ? <CheckCircle2 className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4 text-muted-foreground" />}
                             </Button>
-                            <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-white/10 text-cyan-400" onClick={() => window.location.href = "mailto:mbaslambaig9@gmail.com"} disabled={!revealed}>
+                            <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-white/10 text-cyan-400" onClick={() => window.location.href = `mailto:${EMAIL}`} disabled={!revealed} data-testid="btn-mailto">
                               <Mail className="w-4 h-4" />
                             </Button>
                           </div>
@@ -98,14 +105,14 @@ export function Contact() {
                       </div>
 
                       <div className="flex flex-col gap-2">
-                        <div className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Phone Numbers</div>
+                        <div className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Phone Number</div>
                         <div className="flex items-center justify-between bg-white/5 rounded-lg p-3 border border-white/10">
-                          <span className="font-medium">+91 9423292087</span>
+                          <span className="font-medium">{PHONE_DISPLAY}</span>
                           <div className="flex gap-2">
-                            <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-white/10" onClick={() => handleCopy("+919423292087", "phone1")} disabled={!revealed}>
-                              {copiedField === "phone1" ? <CheckCircle2 className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4 text-muted-foreground" />}
+                            <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-white/10" onClick={() => handleCopy(`+${PHONE_DIGITS}`, "phone")} disabled={!revealed} data-testid="btn-copy-phone">
+                              {copiedField === "phone" ? <CheckCircle2 className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4 text-muted-foreground" />}
                             </Button>
-                            <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-white/10 text-violet-400" onClick={() => window.location.href = "tel:+919423292087"} disabled={!revealed}>
+                            <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-white/10 text-violet-400" onClick={() => window.location.href = `tel:+${PHONE_DIGITS}`} disabled={!revealed} data-testid="btn-call">
                               <Phone className="w-4 h-4" />
                             </Button>
                           </div>
