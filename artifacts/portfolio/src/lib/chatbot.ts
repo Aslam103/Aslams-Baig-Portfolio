@@ -40,27 +40,27 @@ export async function sendMessageToAI(message: string, history: ChatMessage[]): 
 function getLocalResponse(message: string): string {
   const lowerMsg = message.toLowerCase();
   
-  if (lowerMsg.includes("teaching") || lowerMsg.includes("experience")) {
-    return "I have over 13 years of experience, including 3 years teaching ICT at Crescent English Medium School and 2 years at Sunrise English Medium School. I focus on interactive, practical learning.";
+  if (lowerMsg.includes("twg") || lowerMsg.includes("technoworld")) {
+    return "I am currently leading Technical Training & Learning Systems at TWG International (Technoworld Group) in Abids, Hyderabad. You can visit them at technoworldgroup.com.";
   }
-  if (lowerMsg.includes("course") || lowerMsg.includes("offer")) {
-    return "I design and offer courses in AI Tools & Automation, Advanced Excel, Data Analysis, Web Development, and Digital Skills.";
+  if (lowerMsg.includes("course") || lowerMsg.includes("offer") || lowerMsg.includes("teach")) {
+    return "I offer outcomes-first courses in Full Stack Java, Advanced Data Analytics, AI Tools & Automation (n8n), Advanced Excel, Financial Analysis, and Digital Skills.";
   }
-  if (lowerMsg.includes("achievement") || lowerMsg.includes("success")) {
-    return "Some key achievements include reducing financial discrepancies by 20% at Zakat Center, increasing social media engagement by 30%, and building an internal Android app that improved staff efficiency by 25%.";
+  if (lowerMsg.includes("achievement") || lowerMsg.includes("success") || lowerMsg.includes("projects")) {
+    return "Some key projects include AI-integrated course design, automation workflows via n8n and Docker, and quantitative wins like reducing financial discrepancies by 20% at Zakat Center and boosting social engagement by 30%.";
   }
-  if (lowerMsg.includes("vision") || lowerMsg.includes("mission")) {
-    return "My vision is to build a practical education ecosystem where learning creates real-life transformation. I aim to simplify complex knowledge using interactive learning, emotional intelligence, and AI tools.";
+  if (lowerMsg.includes("approach") || lowerMsg.includes("philosophy") || lowerMsg.includes("vision")) {
+    return "My teaching approach is highly practical. I architect learning experiences that combine AI tooling, data analytics, and structured automation—translating complex technical concepts into outcomes students actually use.";
   }
-  if (lowerMsg.includes("working on") || lowerMsg.includes("ongoing") || lowerMsg.includes("project")) {
-    return "Currently, I'm building AI-integrated learning systems, expanding my personal portfolio, and developing automation workflows using n8n in Docker.";
+  if (lowerMsg.includes("working on") || lowerMsg.includes("ongoing") || lowerMsg.includes("building")) {
+    return "Right now I am focused on AI learning systems design, n8n automation pipelines for cohort management, and shaping full stack training at TWG International.";
   }
   if (lowerMsg.includes("sport") || lowerMsg.includes("football") || lowerMsg.includes("karate") || lowerMsg.includes("taekwondo")) {
     return "I'm a football enthusiast, have competed in Taekwondo at the college level, and have experience in Karate. Sports have taught me discipline and resilience.";
   }
-  if (lowerMsg.includes("contact") || lowerMsg.includes("email") || lowerMsg.includes("phone")) {
-    return "You can reach me at mbaslambaig9@gmail.com or via phone/WhatsApp at +91 9423292087.";
+  if (lowerMsg.includes("contact") || lowerMsg.includes("email") || lowerMsg.includes("phone") || lowerMsg.includes("connect")) {
+    return "Tap the Connect button in the nav or contact section to reveal contact options privately.";
   }
 
-  return "That's an interesting question! I am an AI Educator, Course Designer, and System Builder. I specialize in teaching, digital marketing, and AI automations. Could you ask me about my specific courses, achievements, or experience?";
+  return "That's an interesting question! I am an AI Educator, Course Designer, and System Builder. I specialize in technical training, AI automations, and practical learning. Could you ask me about TWG International, my courses, or how to connect?";
 }

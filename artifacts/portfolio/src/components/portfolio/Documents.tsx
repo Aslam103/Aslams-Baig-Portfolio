@@ -75,7 +75,7 @@ export function Documents() {
   };
 
   return (
-    <section id="documents" className="py-20 relative bg-black/20">
+    <section id="documents" className="py-24 relative bg-black/20">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <motion.h2 
@@ -107,7 +107,7 @@ export function Documents() {
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
               >
-                <Card className={`glass-panel h-full flex flex-col ${isAvailable ? 'border-cyan-500/20' : 'border-white/5 opacity-80'} transition-colors`}>
+                <Card className={`glass-panel h-full flex flex-col ${isAvailable ? 'border-cyan-500/20 hover:border-cyan-500/40' : 'border-white/5 opacity-80'} transition-all duration-300`}>
                   <CardHeader className="pb-2">
                     <div className="flex justify-between items-start">
                       <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${isAvailable ? 'bg-cyan-500/20 text-cyan-400' : 'bg-white/5 text-muted-foreground'}`}>
@@ -150,7 +150,7 @@ export function Documents() {
                         </Button>
                       </>
                     ) : (
-                      <Button variant="ghost" className="w-full cursor-not-allowed opacity-50" disabled>
+                      <Button variant="ghost" className="w-full cursor-not-allowed opacity-50 bg-white/5" disabled>
                         Not Yet Available
                       </Button>
                     )}

@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { Navigation } from "@/components/portfolio/Navigation";
 import { Hero } from "@/components/portfolio/Hero";
-import { About } from "@/components/portfolio/About";
-import { Skills } from "@/components/portfolio/Skills";
-import { Experience } from "@/components/portfolio/Experience";
-import { Courses } from "@/components/portfolio/Courses";
 import { Projects } from "@/components/portfolio/Projects";
+import { Skills } from "@/components/portfolio/Skills";
+import { CurrentRole } from "@/components/portfolio/CurrentRole";
+import { Courses } from "@/components/portfolio/Courses";
+import { Experience } from "@/components/portfolio/Experience";
+import { TeachingPhilosophy } from "@/components/portfolio/TeachingPhilosophy";
+import { Innovation } from "@/components/portfolio/Innovation";
+import { Ongoing } from "@/components/portfolio/Ongoing";
+import { Upcoming } from "@/components/portfolio/Upcoming";
 import { Documents } from "@/components/portfolio/Documents";
 import { ChatbotSection } from "@/components/portfolio/Chatbot";
 import { Contact, Footer } from "@/components/portfolio/Contact";
@@ -33,38 +37,57 @@ export default function Home() {
         
         <div className={dashboardMode ? 'grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-8 px-4' : ''}>
           <div className={dashboardMode ? 'space-y-12' : ''}>
-            <About />
-            <Skills />
-            <Experience />
-            <Courses />
             <Projects />
+            <Skills />
+            <CurrentRole />
+            <Courses />
+            <Experience />
+            <TeachingPhilosophy />
+            <Innovation />
+            <Ongoing />
+            <Upcoming />
             <Documents />
           </div>
           
           <div className={dashboardMode ? 'pt-20 space-y-8 sticky top-0 h-screen overflow-y-auto pb-20 custom-scrollbar' : ''}>
             <ChatbotSection />
             {dashboardMode && (
-              <div className="glass-panel p-6 rounded-xl border-cyan-500/20">
-                <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                  System Metrics
-                </h3>
-                <div className="space-y-3 text-sm">
-                  <div className="flex justify-between border-b border-white/5 pb-2">
-                    <span className="text-muted-foreground">Uptime</span>
-                    <span className="font-mono text-cyan-400">99.9%</span>
+              <div className="glass-panel p-6 rounded-xl border-cyan-500/20 space-y-6">
+                <div>
+                  <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                    Quick Actions
+                  </h3>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <button onClick={() => document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' })} className="text-left px-3 py-2 rounded bg-white/5 hover:bg-white/10 transition-colors">View Projects</button>
+                    <button onClick={() => document.querySelector('#courses')?.scrollIntoView({ behavior: 'smooth' })} className="text-left px-3 py-2 rounded bg-white/5 hover:bg-white/10 transition-colors">Explore Courses</button>
+                    <button onClick={() => document.querySelector('#chatbot')?.scrollIntoView({ behavior: 'smooth' })} className="text-left px-3 py-2 rounded bg-white/5 hover:bg-white/10 transition-colors">Chat with AI</button>
+                    <button onClick={() => document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' })} className="text-left px-3 py-2 rounded bg-white/5 hover:bg-white/10 transition-colors">Achievements</button>
+                    <button onClick={() => document.querySelector('#documents')?.scrollIntoView({ behavior: 'smooth' })} className="text-left px-3 py-2 rounded bg-white/5 hover:bg-white/10 transition-colors">Documents</button>
+                    <button onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })} className="text-left px-3 py-2 rounded bg-white/5 hover:bg-white/10 transition-colors">Connect</button>
+                    <button onClick={() => window.open('https://technoworldgroup.com', '_blank')} className="text-left px-3 py-2 rounded bg-white/5 hover:bg-white/10 transition-colors">Visit Company</button>
+                    <button onClick={() => window.open(`${import.meta.env.BASE_URL}documents/Aslam_Resume.pdf`, '_blank')} className="text-left px-3 py-2 rounded bg-white/5 hover:bg-white/10 transition-colors">Download CV</button>
                   </div>
-                  <div className="flex justify-between border-b border-white/5 pb-2">
-                    <span className="text-muted-foreground">Active Workflows</span>
-                    <span className="font-mono text-violet-400">12 (n8n)</span>
-                  </div>
-                  <div className="flex justify-between border-b border-white/5 pb-2">
-                    <span className="text-muted-foreground">Last Updated</span>
-                    <span className="font-mono">{new Date().toLocaleDateString()}</span>
-                  </div>
-                  <div className="flex justify-between pt-1">
-                    <span className="text-muted-foreground">Visitors (Simulated)</span>
-                    <span className="font-mono text-gold-400" style={{ color: 'hsl(45 80% 60%)' }}>1,024</span>
+                </div>
+
+                <div>
+                  <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
+                    <div className="w-2 h-2 bg-violet-500 rounded-full" />
+                    System Metrics
+                  </h3>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex justify-between border-b border-white/5 pb-2">
+                      <span className="text-muted-foreground">Uptime</span>
+                      <span className="font-mono text-cyan-400">99.9%</span>
+                    </div>
+                    <div className="flex justify-between border-b border-white/5 pb-2">
+                      <span className="text-muted-foreground">Active Workflows</span>
+                      <span className="font-mono text-violet-400">12 (n8n)</span>
+                    </div>
+                    <div className="flex justify-between border-b border-white/5 pb-2">
+                      <span className="text-muted-foreground">Last Updated</span>
+                      <span className="font-mono">{new Date().toLocaleDateString()}</span>
+                    </div>
                   </div>
                 </div>
               </div>

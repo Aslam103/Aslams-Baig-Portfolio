@@ -1,0 +1,139 @@
+Improve and restructure my existing AI portfolio website into a professional, privacy-safe, high-impact personal brand dashboard.
+
+Critical Fixes Required:
+
+1. Privacy Protection:
+
+* Remove all direct display of personal phone number and sensitive details
+* Show personal details only when user clicks a button like:
+  "View Contact" or "Connect"
+* Add toggle-based or modal-based reveal system
+* Default state should hide personal data
+
+2. Content Hierarchy Fix:
+   Reorder sections to follow this structure:
+
+3. Hero Section
+
+4. Projects & Key Achievements (MOST IMPORTANT – show first)
+
+5. Skills Dashboard
+
+6. Current Role (TWG International, Abids, Hyderabad)
+
+7. Courses & Expertise
+
+8. Work Experience Timeline (correct chronological order)
+
+9. Teaching Philosophy
+
+10. Ongoing Work
+
+11. Upcoming Plans
+
+12. Documents
+
+13. Contact Section (restricted view)
+
+14. Achievements Section (Upgrade):
+    Highlight high-value work:
+
+* AI-integrated course design
+* Data Analytics training programs
+* Full Stack Java teaching
+* Automation workflows using n8n and Docker
+* Student mentoring systems
+* Content creation and video editing
+
+Make this visually strong using cards and icons.
+
+4. Timeline Fix:
+
+* Correct order (latest first)
+* Remove clutter
+* Add role descriptions clearly
+* Highlight impact, not just roles
+
+5. Courses Section Fix:
+   Ensure all are included:
+
+* Full Stack Java
+* Advanced Data Analytics
+* AI Tools
+* Advanced Excel
+* Financial Analysis
+* Digital Skills
+
+Each course should show:
+
+* Outcome
+* Practical focus
+* Skills gained
+
+6. Resume Handling Fix:
+   Do NOT copy old resume directly.
+   Instead:
+
+* Extract only relevant modern information
+* Rewrite content in professional modern format
+* Focus on skills, impact, and systems
+
+7. Add Company Section:
+   Include:
+   Technoworld Group (TWG International)
+   Website: https://technoworldgroup.com
+
+Show association professionally (not as basic job, but as contribution).
+
+8. Add R&D / Innovation Layer:
+   Create a section:
+   "Innovation & Systems Thinking"
+
+Include:
+
+* AI learning systems
+* Automation workflows
+* Structured education models
+* Dashboard-based thinking
+
+9. UI Improvements:
+
+* Maintain current premium look
+* Improve spacing and clarity
+* Avoid text clutter
+* Add hover effects and clean transitions
+* Improve readability
+
+10. Buttons Upgrade:
+    Add smart CTA buttons:
+
+* View Projects
+* Explore Courses
+* Chat with AI
+* View Achievements
+* View Documents
+* Contact (with hidden info)
+* Visit Company
+
+11. Chatbot Section:
+    Keep chatbot but improve:
+
+* Add quick questions
+* Add “Ask about courses / experience / skills”
+* Keep UI clean
+
+12. Final Goal:
+    The website should:
+
+* Impress students
+* Impress recruiters
+* Impress organizations
+* Show a SYSTEM BUILDER mindset
+* Not expose personal data publicly
+
+Output:
+
+* Clean updated code
+* Improved structure
+* Better content hierarchy
+* Privacy-safe UI

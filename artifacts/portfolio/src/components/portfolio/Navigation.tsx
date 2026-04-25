@@ -1,22 +1,23 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Sun, Moon, LayoutDashboard } from "lucide-react";
+import { Menu, Sun, Moon, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const NAV_LINKS = [
-  { label: "About", href: "#about" },
+  { label: "Projects", href: "#projects" },
   { label: "Skills", href: "#skills" },
+  { label: "Role", href: "#current-role" },
   { label: "Courses", href: "#courses" },
   { label: "Experience", href: "#experience" },
-  { label: "Projects", href: "#projects" },
+  { label: "Innovation", href: "#innovation" },
   { label: "Documents", href: "#documents" },
   { label: "AI Chat", href: "#chatbot" },
-  { label: "Contact", href: "#contact" },
+  { label: "Connect", href: "#contact" },
 ];
 
 export function Navigation({ dashboardMode, setDashboardMode }: { dashboardMode: boolean, setDashboardMode: (v: boolean) => void }) {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isDark, setIsDark] = useState(true); // Default to true based on instructions
+  const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -67,7 +68,7 @@ export function Navigation({ dashboardMode, setDashboardMode }: { dashboardMode:
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
                 className="text-sm text-muted-foreground hover:text-cyan-400 transition-colors font-medium"
-                data-testid={`link-nav-${link.label.toLowerCase()}`}
+                data-testid={`link-nav-${link.label.toLowerCase().replace(/\s+/g, '-')}`}
               >
                 {link.label}
               </a>
