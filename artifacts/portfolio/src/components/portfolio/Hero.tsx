@@ -1,5 +1,17 @@
 import { motion } from "framer-motion";
-import { MessageSquare, LayoutGrid, Compass, Users } from "lucide-react";
+import {
+  MessageSquare,
+  LayoutGrid,
+  Compass,
+  Users,
+  Award,
+  Languages,
+  GraduationCap,
+  Sparkles,
+  BookOpen,
+  Workflow,
+  Briefcase,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -99,15 +111,17 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
             className="relative lg:ml-auto"
           >
-            <div className="relative w-72 h-72 sm:w-96 sm:h-96 mx-auto">
-              <div className="absolute inset-0 rounded-full border border-cyan-500/30 animate-[spin_20s_linear_infinite]" />
-              <div className="absolute inset-4 rounded-full border border-violet-500/20 animate-[spin_15s_linear_infinite_reverse]" />
-              <div className="absolute inset-8 rounded-full border border-white/5 animate-[spin_10s_linear_infinite]" />
-              
-              <div className="absolute inset-12 rounded-full overflow-hidden bg-black/40 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-2xl">
-                <img 
-                  src={`${import.meta.env.BASE_URL}src/assets/hero-avatar.png`} 
-                  alt="MAB AI Avatar" 
+            <div className="relative w-[22rem] h-[22rem] sm:w-[30rem] sm:h-[30rem] mx-auto">
+              {/* Orbital rings */}
+              <div className="absolute inset-12 rounded-full border border-cyan-500/30 animate-[spin_20s_linear_infinite]" />
+              <div className="absolute inset-16 rounded-full border border-violet-500/20 animate-[spin_15s_linear_infinite_reverse]" />
+              <div className="absolute inset-20 rounded-full border border-white/5 animate-[spin_10s_linear_infinite]" />
+
+              {/* MAB orb */}
+              <div className="absolute inset-24 rounded-full overflow-hidden bg-black/40 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-2xl">
+                <img
+                  src={`${import.meta.env.BASE_URL}src/assets/hero-avatar.png`}
+                  alt="MAB AI Avatar"
                   className="w-full h-full object-cover opacity-90 mix-blend-screen"
                   onError={(e) => {
                      e.currentTarget.style.display = 'none';
@@ -116,7 +130,148 @@ export function Hero() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
               </div>
+
+              {/* Floating stat — Total Experience (top-left) */}
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+                className="absolute top-2 left-0 sm:left-2 glass-panel bg-black/60 backdrop-blur-xl border border-cyan-500/30 rounded-2xl px-4 py-3 shadow-[0_0_30px_rgba(6,182,212,0.15)] hover-elevate"
+                data-testid="stat-experience"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-cyan-500/15 flex items-center justify-center border border-cyan-500/30">
+                    <Briefcase className="w-5 h-5 text-cyan-400" />
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold tracking-tight text-white leading-none">13<span className="text-cyan-400">+</span></div>
+                    <div className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Years Exp</div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Floating stat — MSCIT Score (top-right) */}
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.7 }}
+                className="absolute top-8 right-0 sm:right-2 glass-panel bg-black/60 backdrop-blur-xl border border-violet-500/30 rounded-2xl px-4 py-3 shadow-[0_0_30px_rgba(139,92,246,0.15)] hover-elevate"
+                data-testid="stat-mscit"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-violet-500/15 flex items-center justify-center border border-violet-500/30">
+                    <Award className="w-5 h-5 text-violet-400" />
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold tracking-tight text-white leading-none">84<span className="text-violet-400 text-lg">%</span></div>
+                    <div className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">MSCIT</div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Floating stat — Languages (bottom-left) */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.8 }}
+                className="absolute bottom-10 left-0 sm:-left-2 glass-panel bg-black/60 backdrop-blur-xl border border-white/10 rounded-2xl px-4 py-3 hover-elevate"
+                data-testid="stat-languages"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/10">
+                    <Languages className="w-5 h-5" style={{ color: "hsl(45 80% 60%)" }} />
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold tracking-tight text-white leading-none">5</div>
+                    <div className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Languages</div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Floating stat — Certifications (bottom-right) */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.9 }}
+                className="absolute bottom-2 right-0 sm:right-2 glass-panel bg-black/60 backdrop-blur-xl border border-cyan-500/20 rounded-2xl px-4 py-3 hover-elevate"
+                data-testid="stat-cert"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center border border-cyan-500/20">
+                    <GraduationCap className="w-5 h-5 text-cyan-300" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-bold tracking-tight text-white leading-none">B.C.A · ADFA</div>
+                    <div className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Education</div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Floating stat — Courses (mid-right) */}
+              <motion.div
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 1.0 }}
+                className="hidden sm:flex absolute top-1/2 -right-4 -translate-y-1/2 glass-panel bg-black/60 backdrop-blur-xl border border-violet-500/20 rounded-2xl px-3 py-2 hover-elevate items-center gap-2"
+                data-testid="stat-courses"
+              >
+                <BookOpen className="w-4 h-4 text-violet-400" />
+                <div>
+                  <div className="text-sm font-bold text-white leading-none">6 Tracks</div>
+                  <div className="text-[9px] uppercase tracking-widest text-muted-foreground mt-0.5">Courses</div>
+                </div>
+              </motion.div>
+
+              {/* Floating stat — Automations (mid-left) */}
+              <motion.div
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 1.05 }}
+                className="hidden sm:flex absolute top-1/2 -left-4 -translate-y-1/2 glass-panel bg-black/60 backdrop-blur-xl border border-cyan-500/20 rounded-2xl px-3 py-2 hover-elevate items-center gap-2"
+                data-testid="stat-automations"
+              >
+                <Workflow className="w-4 h-4 text-cyan-400" />
+                <div>
+                  <div className="text-sm font-bold text-white leading-none">n8n · Docker</div>
+                  <div className="text-[9px] uppercase tracking-widest text-muted-foreground mt-0.5">Automation</div>
+                </div>
+              </motion.div>
             </div>
+
+            {/* Specialty chips below the orb */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 1.1 }}
+              className="mt-6 flex flex-wrap justify-center gap-2 max-w-md mx-auto"
+              data-testid="hero-specialties"
+            >
+              {[
+                "AI Educator",
+                "Course Designer",
+                "System Builder",
+                "Mentor",
+                "Content Creator",
+                "Data Analytics",
+                "Full Stack Java",
+              ].map((tag, i) => (
+                <Badge
+                  key={tag}
+                  variant="outline"
+                  className={`text-xs font-medium border px-3 py-1 backdrop-blur-sm ${
+                    i % 3 === 0
+                      ? "border-cyan-500/30 bg-cyan-500/5 text-cyan-300"
+                      : i % 3 === 1
+                      ? "border-violet-500/30 bg-violet-500/5 text-violet-300"
+                      : "border-white/15 bg-white/5 text-foreground/80"
+                  }`}
+                  data-testid={`chip-specialty-${tag.toLowerCase().replace(/\s+/g, "-")}`}
+                >
+                  <Sparkles className="w-3 h-3 mr-1.5 opacity-70" />
+                  {tag}
+                </Badge>
+              ))}
+            </motion.div>
           </motion.div>
         </div>
       </div>
