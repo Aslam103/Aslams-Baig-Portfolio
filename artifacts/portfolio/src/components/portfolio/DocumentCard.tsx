@@ -4,6 +4,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button";
 import type { DocumentItem } from "@/data/documents";
 import { downloadResumePdf, generateResumePdf } from "@/lib/generateResume";
+import { getDocumentBlobUrl } from "@/lib/documentStore";
 
 interface DocumentCardProps {
   doc: DocumentItem;
@@ -33,23 +34,30 @@ function isDynamicResume(url: string) {
   return url === "dynamic:resume";
 }
 
+function isIdbFile(url: string) {
+  return url.startsWith("idb:");
+}
+
 function isUnavailable(url: string) {
   return !url || url === "#";
+}
+
+async function resolveBlobUrl(fileUrl: string): Promise<string | null> {
+  if (!isIdbFile(fileUrl)) return fileUrl;
+  return getDocumentBlobUrl(fileUrl.slice(4));
 }
 
 export function DocumentCard({ doc, index = 0, onUnavailable }: DocumentCardProps) {
   const meta = TYPE_META[doc.type];
   const Icon = meta.icon;
   const dynamic = isDynamicResume(doc.fileUrl);
-  const unavailable = !dynamic && isUnavailable(doc.fileUrl);
+  const unavailable = !dynamic && !isIdbFile(doc.fileUrl) && isUnavailable(doc.fileUrl);
 
-  const handleView = () => {
+  const handleView = async () => {
     if (dynamic) {
-      // Open the generated resume in a new tab as a blob URL
       const blob = generateResumePdf().output("blob");
       const url = URL.createObjectURL(blob);
       window.open(url, "_blank", "noopener,noreferrer");
-      // Revoke after a short delay so the new tab can load it
       setTimeout(() => URL.revokeObjectURL(url), 60_000);
       return;
     }
@@ -57,10 +65,16 @@ export function DocumentCard({ doc, index = 0, onUnavailable }: DocumentCardProp
       onUnavailable?.(doc);
       return;
     }
-    window.open(doc.fileUrl, "_blank", "noopener,noreferrer");
+    const url = await resolveBlobUrl(doc.fileUrl);
+    if (!url) {
+      onUnavailable?.(doc);
+      return;
+    }
+    window.open(url, "_blank", "noopener,noreferrer");
+    if (isIdbFile(doc.fileUrl)) setTimeout(() => URL.revokeObjectURL(url), 60_000);
   };
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (dynamic) {
       downloadResumePdf();
       return;
@@ -69,16 +83,20 @@ export function DocumentCard({ doc, index = 0, onUnavailable }: DocumentCardProp
       onUnavailable?.(doc);
       return;
     }
-    // For real URLs: trigger a download via anchor (works for same-origin or
-    // cross-origin servers that allow it; otherwise the browser opens the file).
+    const url = await resolveBlobUrl(doc.fileUrl);
+    if (!url) {
+      onUnavailable?.(doc);
+      return;
+    }
     const a = document.createElement("a");
-    a.href = doc.fileUrl;
+    a.href = url;
     a.download = "";
     a.rel = "noopener noreferrer";
-    a.target = "_blank";
+    if (!isIdbFile(doc.fileUrl)) a.target = "_blank";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+    if (isIdbFile(doc.fileUrl)) setTimeout(() => URL.revokeObjectURL(url), 5_000);
   };
 
   return (

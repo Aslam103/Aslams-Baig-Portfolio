@@ -1,16 +1,16 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, FileX, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DocumentCard } from "./DocumentCard";
 import {
-  documents,
-  documentCategories,
+  documents as staticDocuments,
   documentTypes,
   type DocumentItem,
   type DocumentType,
 } from "@/data/documents";
+import { listAdminDocuments, subscribe } from "@/lib/documentStore";
 
 type CategoryFilter = "all" | string;
 type TypeFilter = "all" | DocumentType;
@@ -20,6 +20,36 @@ export function Resources() {
   const [category, setCategory] = useState<CategoryFilter>("all");
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
   const [pendingNotice, setPendingNotice] = useState<string | null>(null);
+  const [adminDocs, setAdminDocs] = useState(() => listAdminDocuments());
+
+  useEffect(() => {
+    const unsub = subscribe(() => setAdminDocs(listAdminDocuments()));
+    return () => {
+      unsub();
+    };
+  }, []);
+
+  // Merge built-in + admin (public only) into the public document list.
+  const documents: DocumentItem[] = useMemo(() => {
+    const adminPublic: DocumentItem[] = adminDocs
+      .filter((d) => d.access === "public")
+      .map((d) => ({
+        id: d.id,
+        title: d.title,
+        description: d.description,
+        fileUrl: d.fileUrl,
+        thumbnail: d.thumbnail,
+        category: d.category,
+        type: d.type,
+        access: "public",
+      }));
+    return [...adminPublic, ...staticDocuments];
+  }, [adminDocs]);
+
+  const documentCategories = useMemo(
+    () => Array.from(new Set(documents.map((d) => d.category))).sort(),
+    [documents],
+  );
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -32,7 +62,7 @@ export function Resources() {
       const matchesType = typeFilter === "all" || d.type === typeFilter;
       return matchesQuery && matchesCategory && matchesType;
     });
-  }, [query, category, typeFilter]);
+  }, [documents, query, category, typeFilter]);
 
   const handleUnavailable = (doc: DocumentItem) => {
     setPendingNotice(`"${doc.title}" will be published soon.`);
