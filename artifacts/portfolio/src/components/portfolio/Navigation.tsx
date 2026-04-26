@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { label: "Experience", href: "#experience" },
   { label: "Innovation", href: "#innovation" },
   { label: "Documents", href: "#documents" },
+  { label: "Resources", href: "#resources" },
   { label: "AI Chat", href: "#chatbot" },
   { label: "Connect", href: "#contact" },
 ];

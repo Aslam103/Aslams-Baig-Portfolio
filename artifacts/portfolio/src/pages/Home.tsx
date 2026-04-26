@@ -12,6 +12,7 @@ import { Innovation } from "@/components/portfolio/Innovation";
 import { Ongoing } from "@/components/portfolio/Ongoing";
 import { Upcoming } from "@/components/portfolio/Upcoming";
 import { Documents } from "@/components/portfolio/Documents";
+import { Resources } from "@/components/portfolio/Resources";
 import { SocialEcosystem } from "@/components/portfolio/SocialEcosystem";
 import { ChatbotSection } from "@/components/portfolio/Chatbot";
 import { Contact, Footer } from "@/components/portfolio/Contact";
@@ -52,6 +53,7 @@ export default function Home() {
             <Ongoing />
             <Upcoming />
             <Documents />
+            <Resources />
             <SocialEcosystem />
           </div>
           
