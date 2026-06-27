@@ -1,44 +1,30 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "wouter";
 import {
-  Lock,
-  LogOut,
-  Plus,
-  Pencil,
-  Trash2,
-  Search,
-  ExternalLink,
-  Download,
-  Upload,
-  ShieldCheck,
-  Eye,
-  EyeOff,
-  ArrowLeft,
-  Inbox,
-} from "lucide-react";
+  addProject,
+  addSection,
+  clearAdminToken,
+  deleteProject,
+  deleteSection,
+  getAdminContent,
+  hasAdminToken,
+  loginAdmin,
+  publishDraft,
+  reorderSections,
+  resetLayout,
+  saveDraft,
+  setAdminToken,
+  updateProject,
+  updateSection,
+  uploadImage,
+} from "@/lib/cms-api";
+import type { PortfolioContent, PortfolioSection, ProjectCard } from "@/lib/cms-types";
+import { DynamicPortfolio } from "@/components/portfolio/DynamicPortfolio";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import {
   Select,
   SelectContent,
@@ -46,787 +32,625 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { useToast } from "@/hooks/use-toast";
-import {
-  documents as staticDocuments,
-  documentCategories as staticCategories,
-} from "@/data/documents";
-import type { DocumentType } from "@/data/documents";
-import {
-  type AdminDocument,
-  type AccessLevel,
-  createDocument,
-  updateDocument,
-  deleteDocument,
-  listAdminDocuments,
-  subscribe,
-  validateFile,
-  getDocumentBlobUrl,
-} from "@/lib/documentStore";
-import { isAuthenticated, login, logout } from "@/lib/adminAuth";
 
-// ---------- Login Gate ----------
+function createLocalSection(type: PortfolioSection["type"]): PortfolioSection {
+  return {
+    id: `section-${crypto.randomUUID()}`,
+    type,
+    title: `New ${type} section`,
+    subtitle: "",
+    content: "",
+    visible: true,
+    order: 0,
+    align: "left",
+    size: "md",
+    imageUrl: "",
+    icon: "",
+    cards: [],
+    items: [],
+    links: [],
+  };
+}
 
-function LoginGate({ onLogin }: { onLogin: () => void }) {
+function createLocalProject(): ProjectCard {
+  return {
+    id: `project-${crypto.randomUUID()}`,
+    title: "New project",
+    description: "",
+    url: "",
+    imageUrl: "",
+    logo: "🚀",
+  };
+}
+
+function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [show, setShow] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (login(password)) {
-      onLogin();
-    } else {
-      setError("Incorrect password.");
+  const submit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    try {
+      setLoading(true);
+      setError(null);
+      setAdminToken(username, password);
+      await loginAdmin();
+      onSuccess();
+    } catch {
+      clearAdminToken();
+      setError("Invalid username or password.");
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <div className="w-full max-w-md glass-panel rounded-2xl border border-white/10 p-8">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-cyan-300 mb-6"
-          data-testid="link-back-home"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" /> Back to portfolio
-        </Link>
-        <div className="w-12 h-12 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center mb-5">
-          <ShieldCheck className="w-6 h-6 text-cyan-300" />
+    <div className="min-h-screen grid place-items-center bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 text-slate-100 px-4">
+      <form
+        onSubmit={submit}
+        className="w-full max-w-md space-y-6 p-8 rounded-2xl border border-cyan-500/20 bg-slate-900/80 backdrop-blur-xl shadow-2xl"
+      >
+        {/* Header */}
+        <div className="space-y-2 text-center">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+            Admin Portal
+          </h1>
+          <p className="text-sm text-slate-400">Access portfolio management panel</p>
         </div>
-        <h1 className="text-2xl font-bold mb-1">Admin Access</h1>
-        <p className="text-sm text-muted-foreground mb-6">
-          Enter the admin password to manage documents.
-        </p>
 
-        <form onSubmit={submit} className="space-y-4">
-          <div>
-            <Label htmlFor="admin-password" className="text-xs uppercase tracking-wider font-mono">
-              Password
-            </Label>
-            <div className="relative mt-2">
+        {/* Login Form */}
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label className="text-slate-300">Username</Label>
+            <Input
+              value={username}
+              onChange={(event) => setUsername(event.target.value)}
+              placeholder="Enter username"
+              className="bg-slate-800/50 border-slate-700 text-slate-100 placeholder-slate-500"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-slate-300">Password</Label>
+            <div className="relative">
               <Input
-                id="admin-password"
-                type={show ? "text" : "password"}
+                type={showPassword ? "text" : "password"}
                 value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  setError(null);
-                }}
-                placeholder="Enter admin password"
-                className="pr-10 bg-black/30 border-white/10"
-                data-testid="input-admin-password"
-                autoFocus
+                onChange={(event) => setPassword(event.target.value)}
+                placeholder="Enter password"
+                className="bg-slate-800/50 border-slate-700 text-slate-100 placeholder-slate-500 pr-10"
               />
               <button
                 type="button"
-                onClick={() => setShow((s) => !s)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded hover:bg-white/10 text-muted-foreground"
-                aria-label={show ? "Hide password" : "Show password"}
-                data-testid="btn-toggle-password"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300"
               >
-                {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {showPassword ? "Hide" : "Show"}
               </button>
             </div>
-            {error && (
-              <p className="text-xs text-rose-400 mt-2" data-testid="text-login-error">
-                {error}
-              </p>
-            )}
           </div>
-          <Button
-            type="submit"
-            className="w-full bg-cyan-600 hover:bg-cyan-500 text-white"
-            data-testid="btn-admin-login"
-          >
-            <Lock className="w-4 h-4 mr-2" /> Sign In
-          </Button>
-        </form>
-      </div>
+
+          {error && (
+            <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+              ⚠️ {error}
+            </div>
+          )}
+        </div>
+
+        {/* Login Button */}
+        <Button
+          type="submit"
+          className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold h-11"
+          disabled={loading}
+        >
+          {loading ? "Verifying..." : "Login to Admin Panel"}
+        </Button>
+
+        {/* Help Text */}
+        <p className="text-xs text-slate-500 text-center">
+          💡 Configure credentials in <code className="text-cyan-400 bg-slate-800 px-2 py-1 rounded">.env</code> file
+        </p>
+      </form>
     </div>
   );
 }
 
-// ---------- Form Dialog ----------
-
-interface FormState {
-  title: string;
-  description: string;
-  category: string;
-  type: DocumentType;
-  access: AccessLevel;
-  file: File | null;
-}
-
-const EMPTY_FORM: FormState = {
-  title: "",
-  description: "",
-  category: "",
-  type: "pdf",
-  access: "public",
-  file: null,
-};
-
-interface DocumentFormProps {
-  open: boolean;
-  initial: AdminDocument | null;
-  onClose: () => void;
-  onSaved: () => void;
-}
-
-function DocumentForm({ open, initial, onClose, onSaved }: DocumentFormProps) {
-  const { toast } = useToast();
-  const [form, setForm] = useState<FormState>(EMPTY_FORM);
-  const [submitting, setSubmitting] = useState(false);
-  const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-  useEffect(() => {
-    if (open) {
-      if (initial) {
-        setForm({
-          title: initial.title,
-          description: initial.description,
-          category: initial.category,
-          type: initial.type,
-          access: initial.access,
-          file: null,
-        });
-      } else {
-        setForm(EMPTY_FORM);
-      }
-      setErrors({});
-    }
-  }, [open, initial]);
-
-  const isEdit = Boolean(initial);
-
-  const validate = (): boolean => {
-    const e: Partial<Record<keyof FormState, string>> = {};
-    if (!form.title.trim()) e.title = "Title is required.";
-    if (!form.description.trim()) e.description = "Description is required.";
-    if (!form.category.trim()) e.category = "Category is required.";
-    if (!isEdit && !form.file) e.file = "A PDF or PPT/PPTX file is required.";
-    if (form.file) {
-      const v = validateFile(form.file);
-      if (!v.ok) e.file = v.reason ?? "Invalid file.";
-    }
-    setErrors(e);
-    return Object.keys(e).length === 0;
-  };
-
-  const submit = async (ev: React.FormEvent) => {
-    ev.preventDefault();
-    if (!validate()) return;
-    setSubmitting(true);
-    try {
-      if (isEdit && initial) {
-        await updateDocument({
-          id: initial.id,
-          title: form.title,
-          description: form.description,
-          category: form.category,
-          type: form.type,
-          access: form.access,
-          file: form.file,
-        });
-        toast({ title: "Document updated", description: form.title });
-      } else if (form.file) {
-        await createDocument({
-          title: form.title,
-          description: form.description,
-          category: form.category,
-          type: form.type,
-          access: form.access,
-          file: form.file,
-        });
-        toast({ title: "Document added", description: form.title });
-      }
-      onSaved();
-      onClose();
-    } catch (err) {
-      toast({
-        title: "Save failed",
-        description: err instanceof Error ? err.message : "Unknown error",
-        variant: "destructive",
-      });
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
+function SectionEditor({
+  section,
+  onPatch,
+  onUploadImage,
+  onDelete,
+  onAddProject,
+  onProjectPatch,
+  onProjectDelete,
+}: {
+  section: PortfolioSection;
+  onPatch: (patch: Partial<PortfolioSection>) => void;
+  onUploadImage: (file: File) => Promise<void>;
+  onDelete: () => void;
+  onAddProject: () => void;
+  onProjectPatch: (projectId: string, patch: Partial<ProjectCard>) => void;
+  onProjectDelete: (projectId: string) => void;
+}) {
   return (
-    <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="sm:max-w-lg" data-testid="dialog-document-form">
-        <DialogHeader>
-          <DialogTitle>{isEdit ? "Edit Document" : "Add Document"}</DialogTitle>
-          <DialogDescription>
-            {isEdit
-              ? "Update the document details. Replace the file only if needed."
-              : "Upload a new PDF or PPT/PPTX and fill in its details."}
-          </DialogDescription>
-        </DialogHeader>
+    <div className="space-y-4 p-4 rounded-xl border border-white/10 bg-white/5">
+      <div className="flex items-center justify-between">
+        <h3 className="font-semibold">Edit Section: {section.title}</h3>
+        <Button variant="destructive" onClick={onDelete}>
+          Delete Section
+        </Button>
+      </div>
 
-        <form onSubmit={submit} className="space-y-4 mt-2">
-          <div className="space-y-2">
-            <Label htmlFor="title">Title *</Label>
-            <Input
-              id="title"
-              value={form.title}
-              onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-              placeholder="e.g. AI Foundations Curriculum"
-              data-testid="input-title"
-            />
-            {errors.title && <p className="text-xs text-rose-400">{errors.title}</p>}
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="space-y-2">
+          <Label>Title</Label>
+          <Input
+            value={section.title}
+            onChange={(event) => onPatch({ title: event.target.value })}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Subtitle</Label>
+          <Input
+            value={section.subtitle}
+            onChange={(event) => onPatch({ subtitle: event.target.value })}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Icon (emoji or short text)</Label>
+          <Input
+            value={section.icon}
+            onChange={(event) => onPatch({ icon: event.target.value })}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label>Type</Label>
+          <Input value={section.type} disabled />
+        </div>
+      </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="description">Description *</Label>
-            <Textarea
-              id="description"
-              value={form.description}
-              onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
-              placeholder="Short summary shown on the public card."
-              rows={3}
-              data-testid="input-description"
-            />
-            {errors.description && (
-              <p className="text-xs text-rose-400">{errors.description}</p>
-            )}
-          </div>
+      <div className="space-y-2">
+        <Label>Content</Label>
+        <Textarea
+          rows={4}
+          value={section.content}
+          onChange={(event) => onPatch({ content: event.target.value })}
+        />
+      </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-2">
-              <Label htmlFor="category">Category *</Label>
-              <Input
-                id="category"
-                list="category-suggestions"
-                value={form.category}
-                onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
-                placeholder="e.g. Curriculum"
-                data-testid="input-category"
-              />
-              <datalist id="category-suggestions">
-                {staticCategories.map((c) => (
-                  <option key={c} value={c} />
-                ))}
-              </datalist>
-              {errors.category && (
-                <p className="text-xs text-rose-400">{errors.category}</p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="type">Type *</Label>
-              <Select
-                value={form.type}
-                onValueChange={(v) => setForm((f) => ({ ...f, type: v as DocumentType }))}
-              >
-                <SelectTrigger id="type" data-testid="select-type">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="pdf">PDF</SelectItem>
-                  <SelectItem value="ppt">PPT / PPTX</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between rounded-lg border border-white/10 bg-black/20 p-3">
-            <div>
-              <Label htmlFor="access" className="text-sm font-semibold">
-                Public visibility
-              </Label>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                {form.access === "public"
-                  ? "Visible on the public Resources section."
-                  : "Hidden from the public site (admin-only)."}
-              </p>
-            </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="space-y-2">
+          <Label>Alignment</Label>
+          <Select
+            value={section.align}
+            onValueChange={(value: PortfolioSection["align"]) => onPatch({ align: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="left">Left</SelectItem>
+              <SelectItem value="center">Center</SelectItem>
+              <SelectItem value="right">Right</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-2">
+          <Label>Size</Label>
+          <Select
+            value={section.size}
+            onValueChange={(value: PortfolioSection["size"]) => onPatch({ size: value })}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="sm">Small</SelectItem>
+              <SelectItem value="md">Medium</SelectItem>
+              <SelectItem value="lg">Large</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-2">
+          <Label>Visible</Label>
+          <div className="h-10 px-3 flex items-center rounded-md border border-white/10">
             <Switch
-              id="access"
-              checked={form.access === "public"}
-              onCheckedChange={(v) =>
-                setForm((f) => ({ ...f, access: v ? "public" : "private" }))
-              }
-              data-testid="switch-access"
+              checked={section.visible}
+              onCheckedChange={(checked) => onPatch({ visible: checked })}
             />
           </div>
+        </div>
+      </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="file">
-              File {isEdit ? "(leave empty to keep current)" : "*"}
-            </Label>
-            <div className="flex items-center gap-2">
-              <Input
-                id="file"
-                ref={fileInputRef}
-                type="file"
-                accept=".pdf,.ppt,.pptx,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation"
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, file: e.target.files?.[0] ?? null }))
-                }
-                className="bg-black/30 border-white/10 file:text-cyan-300 file:bg-cyan-500/15 file:border-0 file:rounded file:px-2 file:py-1 file:mr-3"
-                data-testid="input-file"
-              />
-            </div>
-            {form.file && (
-              <p className="text-xs text-muted-foreground" data-testid="text-file-info">
-                {form.file.name} · {(form.file.size / 1024).toFixed(1)} KB
-              </p>
-            )}
-            {isEdit && initial?.fileName && !form.file && (
-              <p className="text-xs text-muted-foreground">
-                Current: <span className="text-foreground/80">{initial.fileName}</span>
-              </p>
-            )}
-            {errors.file && <p className="text-xs text-rose-400">{errors.file}</p>}
-            <p className="text-[11px] text-muted-foreground/70">
-              Accepted: PDF, PPT, PPTX. Max 50 MB.
-            </p>
+      <div className="space-y-2">
+        <Label>Image URL</Label>
+        <Input
+          value={section.imageUrl}
+          onChange={(event) => onPatch({ imageUrl: event.target.value })}
+          placeholder="Paste image URL or upload below"
+        />
+        <Input
+          type="file"
+          accept="image/*"
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+            if (file) {
+              void onUploadImage(file);
+            }
+          }}
+        />
+      </div>
+
+      {(section.type === "skills" || section.type === "custom") && (
+        <div className="space-y-2">
+          <Label>List Items (one per line)</Label>
+          <Textarea
+            rows={4}
+            value={section.items.join("\n")}
+            onChange={(event) =>
+              onPatch({
+                items: event.target.value
+                  .split("\n")
+                  .map((item) => item.trim())
+                  .filter(Boolean),
+              })
+            }
+          />
+        </div>
+      )}
+
+      {section.type === "contact" && (
+        <div className="space-y-2">
+          <Label>Contact Links (label|url per line)</Label>
+          <Textarea
+            rows={4}
+            value={section.links.map((link) => `${link.label}|${link.url}`).join("\n")}
+            onChange={(event) =>
+              onPatch({
+                links: event.target.value
+                  .split("\n")
+                  .map((line) => line.trim())
+                  .filter(Boolean)
+                  .map((line) => {
+                    const [label, url] = line.split("|");
+                    return { label: label?.trim() ?? "Link", url: url?.trim() ?? "" };
+                  }),
+              })
+            }
+          />
+        </div>
+      )}
+
+      {section.type === "projects" && (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <Label>Project Cards</Label>
+            <Button onClick={onAddProject}>Add Project Card</Button>
           </div>
-
-          <DialogFooter className="gap-2 pt-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onClose}
-              disabled={submitting}
-              data-testid="btn-cancel-form"
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              className="bg-cyan-600 hover:bg-cyan-500 text-white"
-              disabled={submitting}
-              data-testid="btn-submit-form"
-            >
-              {submitting ? "Saving…" : isEdit ? "Update" : "Add"}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+          {section.cards.map((card) => (
+            <div key={card.id} className="p-3 rounded-md border border-white/10 space-y-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <Input
+                  value={card.title}
+                  onChange={(event) =>
+                    onProjectPatch(card.id, { title: event.target.value })
+                  }
+                  placeholder="Project title"
+                />
+                <Input
+                  value={card.logo}
+                  onChange={(event) =>
+                    onProjectPatch(card.id, { logo: event.target.value })
+                  }
+                  placeholder="Logo/icon"
+                />
+                <Input
+                  value={card.url}
+                  onChange={(event) =>
+                    onProjectPatch(card.id, { url: event.target.value })
+                  }
+                  placeholder="Project URL"
+                  className="md:col-span-2"
+                />
+                <Input
+                  value={card.imageUrl}
+                  onChange={(event) =>
+                    onProjectPatch(card.id, { imageUrl: event.target.value })
+                  }
+                  placeholder="Image URL"
+                  className="md:col-span-2"
+                />
+              </div>
+              <Textarea
+                rows={2}
+                value={card.description}
+                onChange={(event) =>
+                  onProjectPatch(card.id, { description: event.target.value })
+                }
+                placeholder="Project description"
+              />
+              <Button variant="destructive" onClick={() => onProjectDelete(card.id)}>
+                Remove Card
+              </Button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
-// ---------- Admin Panel ----------
+export default function Admin() {
+  const [authenticated, setAuthenticated] = useState(hasAdminToken());
+  const [draft, setDraft] = useState<PortfolioContent | null>(null);
+  const [published, setPublished] = useState<PortfolioContent | null>(null);
+  const [analytics, setAnalytics] = useState<{ views: number; projectClicks: number }>({
+    views: 0,
+    projectClicks: 0,
+  });
+  const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
+  const [message, setMessage] = useState<string>("");
+  const [showPreview, setShowPreview] = useState(true);
+  const [dragId, setDragId] = useState<string | null>(null);
 
-function AdminPanel({ onLogout }: { onLogout: () => void }) {
-  const [adminDocs, setAdminDocs] = useState<AdminDocument[]>(() => listAdminDocuments());
-  const [search, setSearch] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState<string>("all");
-  const [typeFilter, setTypeFilter] = useState<"all" | DocumentType>("all");
-  const [formOpen, setFormOpen] = useState(false);
-  const [editing, setEditing] = useState<AdminDocument | null>(null);
-  const [confirmDelete, setConfirmDelete] = useState<AdminDocument | null>(null);
+  const selectedSection = useMemo(() => {
+    if (!draft || !selectedSectionId) return null;
+    return draft.sections.find((section) => section.id === selectedSectionId) ?? null;
+  }, [draft, selectedSectionId]);
+
+  const loadContent = async () => {
+    const result = await getAdminContent();
+    setDraft(result.draft);
+    setPublished(result.published);
+    setAnalytics(result.analytics);
+    if (!selectedSectionId && result.draft.sections[0]) {
+      setSelectedSectionId(result.draft.sections[0].id);
+    }
+  };
 
   useEffect(() => {
-    const unsub = subscribe(() => setAdminDocs(listAdminDocuments()));
-    return () => {
-      unsub();
-    };
-  }, []);
-
-  const allCategories = useMemo(() => {
-    const set = new Set<string>(staticCategories);
-    for (const d of adminDocs) set.add(d.category);
-    return Array.from(set).sort();
-  }, [adminDocs]);
-
-  // Combined list for the table: built-in (read-only) + admin docs.
-  type RowDoc = {
-    id: string;
-    title: string;
-    description: string;
-    category: string;
-    type: DocumentType;
-    access: AccessLevel;
-    source: "builtin" | "admin";
-    fileUrl: string;
-    fileName?: string;
-  };
-
-  const rows: RowDoc[] = useMemo(() => {
-    const builtin: RowDoc[] = staticDocuments.map((d) => ({
-      id: d.id,
-      title: d.title,
-      description: d.description,
-      category: d.category,
-      type: d.type,
-      access: "public",
-      source: "builtin",
-      fileUrl: d.fileUrl,
-    }));
-    const admin: RowDoc[] = adminDocs.map((d) => ({
-      id: d.id,
-      title: d.title,
-      description: d.description,
-      category: d.category,
-      type: d.type,
-      access: d.access,
-      source: "admin",
-      fileUrl: d.fileUrl,
-      fileName: d.fileName,
-    }));
-    return [...admin, ...builtin];
-  }, [adminDocs]);
-
-  const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    return rows.filter((r) => {
-      const matchesQ =
-        !q ||
-        r.title.toLowerCase().includes(q) ||
-        r.description.toLowerCase().includes(q);
-      const matchesCat = categoryFilter === "all" || r.category === categoryFilter;
-      const matchesType = typeFilter === "all" || r.type === typeFilter;
-      return matchesQ && matchesCat && matchesType;
+    if (!authenticated) return;
+    void loadContent().catch(() => {
+      clearAdminToken();
+      setAuthenticated(false);
     });
-  }, [rows, search, categoryFilter, typeFilter]);
+  }, [authenticated]);
 
-  const openAdd = () => {
-    setEditing(null);
-    setFormOpen(true);
-  };
-  const openEdit = (doc: AdminDocument) => {
-    setEditing(doc);
-    setFormOpen(true);
-  };
-  const closeForm = () => {
-    setFormOpen(false);
-    setEditing(null);
-  };
+  if (!authenticated) {
+    return <LoginScreen onSuccess={() => setAuthenticated(true)} />;
+  }
 
-  const view = async (row: RowDoc) => {
-    if (row.fileUrl.startsWith("idb:")) {
-      const url = await getDocumentBlobUrl(row.fileUrl.slice(4));
-      if (url) {
-        window.open(url, "_blank", "noopener,noreferrer");
-        setTimeout(() => URL.revokeObjectURL(url), 60_000);
-      }
-    } else if (row.fileUrl && row.fileUrl !== "#") {
-      window.open(row.fileUrl, "_blank", "noopener,noreferrer");
-    }
+  if (!draft || !published) {
+    return (
+      <div className="min-h-screen grid place-items-center bg-slate-950 text-slate-100">
+        Loading admin dashboard...
+      </div>
+    );
+  }
+
+  const setDraftSection = async (sectionId: string, patch: Partial<PortfolioSection>) => {
+    const nextDraft: PortfolioContent = {
+      ...draft,
+      sections: draft.sections.map((section) =>
+        section.id === sectionId ? { ...section, ...patch } : section,
+      ),
+    };
+    setDraft(nextDraft);
+    await updateSection(sectionId, patch);
   };
 
-  const download = async (row: RowDoc) => {
-    if (row.fileUrl.startsWith("idb:")) {
-      const url = await getDocumentBlobUrl(row.fileUrl.slice(4));
-      if (!url) return;
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = row.fileName ?? `${row.title}.${row.type === "pdf" ? "pdf" : "pptx"}`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 5_000);
-    } else if (row.fileUrl && row.fileUrl !== "#") {
-      window.open(row.fileUrl, "_blank", "noopener,noreferrer");
-    }
+  const handleUploadImage = async (sectionId: string, file: File) => {
+    const uploaded = await uploadImage(file);
+    await setDraftSection(sectionId, { imageUrl: uploaded.url });
+    setMessage("Image uploaded successfully.");
   };
 
-  const handleDelete = async () => {
-    if (!confirmDelete) return;
-    await deleteDocument(confirmDelete.id);
-    setConfirmDelete(null);
+  const handleSaveDraft = async () => {
+    await saveDraft(draft);
+    setMessage("Draft saved.");
   };
 
-  const adminCount = adminDocs.length;
-  const publicAdminCount = adminDocs.filter((d) => d.access === "public").length;
+  const handlePublish = async () => {
+    const response = await publishDraft();
+    setPublished(response.content);
+    setMessage("Draft published to live portfolio.");
+  };
+
+  const handleReset = async () => {
+    const response = await resetLayout();
+    setDraft(response.content);
+    setPublished(response.content);
+    setSelectedSectionId(response.content.sections[0]?.id ?? null);
+    setMessage("Layout reset to defaults.");
+  };
+
+  const handleAddSection = async (type: PortfolioSection["type"]) => {
+    const section = createLocalSection(type);
+    await addSection(section);
+    await loadContent();
+    setSelectedSectionId(section.id);
+    setMessage(`Added ${type} section.`);
+  };
+
+  const handleDeleteSection = async (sectionId: string) => {
+    await deleteSection(sectionId);
+    await loadContent();
+    setMessage("Section deleted.");
+  };
+
+  const handleReorder = async (targetId: string) => {
+    if (!dragId || dragId === targetId) return;
+    // Drag-drop reorder in memory first, then persist order through API.
+    const ordered = [...draft.sections].sort((a, b) => a.order - b.order);
+    const dragIndex = ordered.findIndex((item) => item.id === dragId);
+    const targetIndex = ordered.findIndex((item) => item.id === targetId);
+    if (dragIndex < 0 || targetIndex < 0) return;
+    const [moved] = ordered.splice(dragIndex, 1);
+    ordered.splice(targetIndex, 0, moved);
+    const nextDraft = {
+      ...draft,
+      sections: ordered.map((item, index) => ({ ...item, order: index })),
+    };
+    setDraft(nextDraft);
+    await reorderSections(nextDraft.sections.map((item) => item.id));
+    setDragId(null);
+  };
+
+  const handleAddProject = async (sectionId: string) => {
+    const card = createLocalProject();
+    await addProject(sectionId, card);
+    await loadContent();
+    setMessage("Project card added.");
+  };
+
+  const handleProjectPatch = async (
+    sectionId: string,
+    cardId: string,
+    patch: Partial<ProjectCard>,
+  ) => {
+    const nextDraft: PortfolioContent = {
+      ...draft,
+      sections: draft.sections.map((section) => {
+        if (section.id !== sectionId) return section;
+        return {
+          ...section,
+          cards: section.cards.map((card) =>
+            card.id === cardId ? { ...card, ...patch } : card,
+          ),
+        };
+      }),
+    };
+    setDraft(nextDraft);
+    await updateProject(sectionId, cardId, patch);
+  };
+
+  const handleProjectDelete = async (sectionId: string, cardId: string) => {
+    await deleteProject(sectionId, cardId);
+    await loadContent();
+    setMessage("Project card removed.");
+  };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      {/* Top bar */}
-      <header className="border-b border-white/10 bg-black/30 backdrop-blur-xl sticky top-0 z-30">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link
-              to="/"
-              className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-cyan-300"
-              data-testid="link-back-home"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" /> Portfolio
-            </Link>
-            <div className="w-px h-5 bg-white/10" />
-            <div>
-              <h1 className="text-lg font-bold leading-tight flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-cyan-300" /> Document Admin
-              </h1>
-              <p className="text-[11px] text-muted-foreground font-mono">
-                {adminCount} admin · {publicAdminCount} public · {staticDocuments.length} built-in
-              </p>
-            </div>
-          </div>
+    <div className="min-h-screen bg-slate-950 text-slate-100">
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-black/40 backdrop-blur">
+        <div className="mx-auto max-w-7xl px-4 py-3 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <Button
-              onClick={openAdd}
-              className="bg-cyan-600 hover:bg-cyan-500 text-white"
-              data-testid="btn-add-document"
-            >
-              <Plus className="w-4 h-4 mr-2" /> Add Document
+            <Button variant="outline" asChild>
+              <Link to="/">Back to Portfolio</Link>
+            </Button>
+            <h1 className="font-semibold">Admin Dashboard</h1>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => setShowPreview((value) => !value)}>
+              {showPreview ? "Hide Preview" : "Show Preview"}
+            </Button>
+            <Button variant="outline" onClick={handleSaveDraft}>
+              Save Draft
+            </Button>
+            <Button onClick={handlePublish}>Publish</Button>
+            <Button variant="destructive" onClick={handleReset}>
+              Reset Layout
             </Button>
             <Button
-              variant="outline"
-              onClick={onLogout}
-              className="border-white/10"
-              data-testid="btn-logout"
+              variant="secondary"
+              onClick={() => {
+                clearAdminToken();
+                setAuthenticated(false);
+              }}
             >
-              <LogOut className="w-4 h-4 mr-2" /> Logout
+              Logout
             </Button>
           </div>
         </div>
       </header>
 
-      {/* Toolbar */}
-      <div className="container mx-auto px-4 py-6">
-        <div className="glass-panel rounded-2xl border border-white/10 p-4 mb-6 flex flex-col md:flex-row gap-3 md:items-center">
-          <div className="relative flex-1">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
-            <Input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search title or description…"
-              className="pl-9 bg-black/30 border-white/10"
-              data-testid="input-admin-search"
-            />
-          </div>
-          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-            <SelectTrigger className="md:w-48" data-testid="select-admin-category">
-              <SelectValue placeholder="Category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All categories</SelectItem>
-              {allCategories.map((c) => (
-                <SelectItem key={c} value={c}>
-                  {c}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select
-            value={typeFilter}
-            onValueChange={(v) => setTypeFilter(v as "all" | DocumentType)}
-          >
-            <SelectTrigger className="md:w-36" data-testid="select-admin-type">
-              <SelectValue placeholder="Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All types</SelectItem>
-              <SelectItem value="pdf">PDF</SelectItem>
-              <SelectItem value="ppt">PPT</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Table */}
-        <div className="glass-panel rounded-2xl border border-white/10 overflow-hidden">
-          {filtered.length === 0 ? (
-            <div className="p-12 text-center" data-testid="text-admin-empty">
-              <div className="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-4">
-                <Inbox className="w-6 h-6 text-muted-foreground" />
-              </div>
-              <p className="text-sm text-muted-foreground">No documents match your filters.</p>
+      <main className="mx-auto max-w-7xl px-4 py-6 grid grid-cols-1 xl:grid-cols-[320px_1fr] gap-6">
+        <aside className="space-y-4">
+          <div className="p-4 rounded-xl border border-white/10 bg-white/5 space-y-3">
+            <h2 className="font-semibold">Sections</h2>
+            <div className="space-y-2">
+              {[...draft.sections]
+                .sort((a, b) => a.order - b.order)
+                .map((section) => (
+                  <button
+                    key={section.id}
+                    draggable
+                    onDragStart={() => setDragId(section.id)}
+                    onDragOver={(event) => event.preventDefault()}
+                    onDrop={() => void handleReorder(section.id)}
+                    className={`w-full p-2 rounded-md text-left border ${
+                      selectedSectionId === section.id
+                        ? "border-cyan-400 bg-cyan-500/20"
+                        : "border-white/10 bg-black/20"
+                    }`}
+                    onClick={() => setSelectedSectionId(section.id)}
+                  >
+                    <p className="font-medium">{section.title}</p>
+                    <p className="text-xs opacity-70">
+                      {section.type} | {section.visible ? "Visible" : "Hidden"}
+                    </p>
+                  </button>
+                ))}
             </div>
+            <div className="grid grid-cols-2 gap-2">
+              {(["hero", "about", "projects", "skills", "contact", "custom"] as const).map(
+                (type) => (
+                  <Button
+                    key={type}
+                    variant="outline"
+                    onClick={() => void handleAddSection(type)}
+                  >
+                    + {type}
+                  </Button>
+                ),
+              )}
+            </div>
+          </div>
+
+          <div className="p-4 rounded-xl border border-white/10 bg-white/5 text-sm space-y-1">
+            <h2 className="font-semibold">Analytics</h2>
+            <p>Views: {analytics.views}</p>
+            <p>Project clicks: {analytics.projectClicks}</p>
+          </div>
+
+          {message && (
+            <p className="text-sm text-emerald-300 p-3 rounded-md border border-emerald-500/30 bg-emerald-500/10">
+              {message}
+            </p>
+          )}
+        </aside>
+
+        <section className="space-y-6">
+          {selectedSection ? (
+            <SectionEditor
+              section={selectedSection}
+              onPatch={(patch) => void setDraftSection(selectedSection.id, patch)}
+              onUploadImage={(file) => handleUploadImage(selectedSection.id, file)}
+              onDelete={() => void handleDeleteSection(selectedSection.id)}
+              onAddProject={() => void handleAddProject(selectedSection.id)}
+              onProjectPatch={(projectId, patch) =>
+                void handleProjectPatch(selectedSection.id, projectId, patch)
+              }
+              onProjectDelete={(projectId) =>
+                void handleProjectDelete(selectedSection.id, projectId)
+              }
+            />
           ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow className="border-white/10 hover:bg-transparent">
-                    <TableHead>Title</TableHead>
-                    <TableHead className="hidden md:table-cell">Category</TableHead>
-                    <TableHead className="hidden sm:table-cell">Type</TableHead>
-                    <TableHead className="hidden md:table-cell">Access</TableHead>
-                    <TableHead className="hidden lg:table-cell">Source</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filtered.map((row) => (
-                    <TableRow
-                      key={`${row.source}-${row.id}`}
-                      className="border-white/5 hover:bg-white/5"
-                      data-testid={`row-doc-${row.id}`}
-                    >
-                      <TableCell className="max-w-[280px]">
-                        <div className="font-semibold truncate" title={row.title}>
-                          {row.title}
-                        </div>
-                        <div
-                          className="text-xs text-muted-foreground truncate"
-                          title={row.description}
-                        >
-                          {row.description}
-                        </div>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        <span className="px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider border border-violet-500/30 bg-violet-500/10 text-violet-300">
-                          {row.category}
-                        </span>
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">
-                        <span
-                          className={`px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider border ${
-                            row.type === "pdf"
-                              ? "border-rose-500/30 bg-rose-500/10 text-rose-300"
-                              : "border-amber-500/30 bg-amber-500/10 text-amber-300"
-                          }`}
-                        >
-                          {row.type}
-                        </span>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        {row.access === "public" ? (
-                          <span className="text-xs text-emerald-300 font-mono">Public</span>
-                        ) : (
-                          <span className="text-xs text-amber-300 font-mono">Restricted</span>
-                        )}
-                      </TableCell>
-                      <TableCell className="hidden lg:table-cell">
-                        <span
-                          className={`text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded border ${
-                            row.source === "admin"
-                              ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-300"
-                              : "border-white/10 bg-white/5 text-muted-foreground"
-                          }`}
-                        >
-                          {row.source === "admin" ? "Admin" : "Built-in"}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-1">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => view(row)}
-                            disabled={!row.fileUrl || row.fileUrl === "#"}
-                            title="View"
-                            data-testid={`btn-admin-view-${row.id}`}
-                          >
-                            <ExternalLink className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => download(row)}
-                            disabled={!row.fileUrl || row.fileUrl === "#"}
-                            title="Download"
-                            data-testid={`btn-admin-download-${row.id}`}
-                          >
-                            <Download className="w-4 h-4" />
-                          </Button>
-                          {row.source === "admin" ? (
-                            <>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() =>
-                                  openEdit(adminDocs.find((d) => d.id === row.id)!)
-                                }
-                                title="Edit"
-                                data-testid={`btn-admin-edit-${row.id}`}
-                              >
-                                <Pencil className="w-4 h-4 text-cyan-300" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() =>
-                                  setConfirmDelete(adminDocs.find((d) => d.id === row.id)!)
-                                }
-                                title="Delete"
-                                data-testid={`btn-admin-delete-${row.id}`}
-                              >
-                                <Trash2 className="w-4 h-4 text-rose-300" />
-                              </Button>
-                            </>
-                          ) : (
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              disabled
-                              title="Built-in (edit in src/data/documents.ts)"
-                            >
-                              <Lock className="w-4 h-4 text-muted-foreground/50" />
-                            </Button>
-                          )}
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+            <p className="opacity-80">Select a section to start editing.</p>
+          )}
+
+          {showPreview && (
+            <div className="rounded-xl border border-white/10 overflow-hidden">
+              <div className="px-4 py-2 bg-black/40 border-b border-white/10 text-sm font-medium">
+                Live Preview (Draft)
+              </div>
+              {/* Preview helps validate edits before hitting Publish. */}
+              <DynamicPortfolio content={draft} compact />
             </div>
           )}
-        </div>
-
-        <p className="text-[11px] text-muted-foreground/70 mt-4 max-w-3xl">
-          <Upload className="inline w-3 h-3 mr-1 -mt-0.5" />
-          Admin uploads are stored in this browser (IndexedDB). They appear on this device's
-          public Resources section. To make a document permanently visible to all visitors, edit{" "}
-          <code className="text-cyan-300">src/data/documents.ts</code>. Built-in entries are
-          read-only here.
-        </p>
-      </div>
-
-      {/* Add / Edit dialog */}
-      <DocumentForm
-        open={formOpen}
-        initial={editing}
-        onClose={closeForm}
-        onSaved={() => {
-          /* state syncs via subscribe() */
-        }}
-      />
-
-      {/* Delete confirm */}
-      <AlertDialog open={!!confirmDelete} onOpenChange={(o) => !o && setConfirmDelete(null)}>
-        <AlertDialogContent data-testid="dialog-confirm-delete">
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete this document?</AlertDialogTitle>
-            <AlertDialogDescription>
-              "{confirmDelete?.title}" will be permanently removed from this admin store and the
-              uploaded file will be deleted from your browser.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel data-testid="btn-cancel-delete">Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDelete}
-              className="bg-rose-600 hover:bg-rose-500 text-white"
-              data-testid="btn-confirm-delete"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        </section>
+      </main>
     </div>
-  );
-}
-
-// ---------- Page entry ----------
-
-export default function Admin() {
-  const [authed, setAuthed] = useState<boolean>(() => isAuthenticated());
-
-  if (!authed) return <LoginGate onLogin={() => setAuthed(true)} />;
-  return (
-    <AdminPanel
-      onLogout={() => {
-        logout();
-        setAuthed(false);
-      }}
-    />
   );
 }

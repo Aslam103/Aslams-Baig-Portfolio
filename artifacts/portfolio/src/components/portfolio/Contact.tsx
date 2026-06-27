@@ -158,6 +158,7 @@ export function Footer() {
         
         <div className="text-xs text-muted-foreground opacity-60 text-center">
           © {new Date().getFullYear()} Mirza Aslam Baig. All rights reserved. <br/>
+          Created by Aslam Baig (7387292087) • Designed by Aslam7387292087 <br/>
           Built for the AI era.
         </div>
       </div>

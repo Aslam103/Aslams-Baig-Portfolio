@@ -1,0 +1,107 @@
+
+> @workspace/api-server@0.0.0 dev D:\Markaz\Aslam Portfolio\Aslams-Baig-Portfolio\artifacts\api-server
+> cross-env NODE_ENV=development tsx watch src/index.ts
+
+[01:25:40.262] [32mINFO[39m (13928): [36mServer listening[39m
+    [35mport[39m: 8790
+[01:26:05.045] [32mINFO[39m (13928): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 1,
+      "method": "GET",
+      "url": "/api/healthz"
+    }
+    [35mres[39m: {
+      "statusCode": 200
+    }
+    [35mresponseTime[39m: 7
+[01:26:05.092] [32mINFO[39m (13928): [36mrequest completed[39m
+    [35mreq[39m: {
+      "id": 2,
+      "method": "POST",
+      "url": "/api/admin/login"
+    }
+    [35mres[39m: {
+      "statusCode": 200
+    }
+    [35mresponseTime[39m: 18
+Error: Supabase read failed (portfolio_state). Ensure table exists and credentials are valid. TypeError: fetch failed
+    at getOrCreatePortfolioState (D:\Markaz\Aslam Portfolio\Aslams-Baig-Portfolio\artifacts\api-server\src\lib\portfolioStore.ts:82:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async <anonymous> (D:\Markaz\Aslam Portfolio\Aslams-Baig-Portfolio\artifacts\api-server\src\routes\content.ts:86:17)
+[01:26:12.293] [32mINFO[39m (13928): [36mrequest errored[39m
+    [35mreq[39m: {
+      "id": 3,
+      "method": "GET",
+      "url": "/api/admin/content"
+    }
+    [35mres[39m: {
+      "statusCode": 500
+    }
+    [35mresponseTime[39m: 7181
+    err: {
+      "type": "Error",
+      "message": "failed with status code 500",
+      "stack":
+          Error: failed with status code 500
+              at onResFinished (D:\Markaz\Aslam Portfolio\Aslams-Baig-Portfolio\node_modules\.pnpm\pino-http@10.5.0\node_modules\pino-http\logger.js:115:39)
+              at ServerResponse.onResponseComplete (D:\Markaz\Aslam Portfolio\Aslams-Baig-Portfolio\node_modules\.pnpm\pino-http@10.5.0\node_modules\pino-http\logger.js:178:14)
+              at ServerResponse.emit (node:events:519:35)
+              at onFinish (node:_http_outgoing:1081:10)
+              at callback (node:internal/streams/writable:764:21)
+              at afterWrite (node:internal/streams/writable:708:5)
+              at afterWriteTick (node:internal/streams/writable:694:10)
+              at processTicksAndRejections (node:internal/process/task_queues:89:21)
+              at runNextTicks (node:internal/process/task_queues:69:3)
+              at process.processImmediate (node:internal/timers:476:9)
+    }
+Error: Supabase read failed (portfolio_state). Ensure table exists and credentials are valid. TypeError: fetch failed
+    at getOrCreatePortfolioState (D:\Markaz\Aslam Portfolio\Aslams-Baig-Portfolio\artifacts\api-server\src\lib\portfolioStore.ts:82:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async <anonymous> (D:\Markaz\Aslam Portfolio\Aslams-Baig-Portfolio\artifacts\api-server\src\routes\content.ts:86:17)
+[01:26:37.229] [32mINFO[39m (13928): [36mrequest errored[39m
+    [35mreq[39m: {
+      "id": 4,
+      "method": "GET",
+      "url": "/api/admin/content"
+    }
+    [35mres[39m: {
+      "statusCode": 500
+    }
+    [35mresponseTime[39m: 7055
+    err: {
+      "type": "Error",
+      "message": "failed with status code 500",
+      "stack":
+          Error: failed with status code 500
+              at onResFinished (D:\Markaz\Aslam Portfolio\Aslams-Baig-Portfolio\node_modules\.pnpm\pino-http@10.5.0\node_modules\pino-http\logger.js:115:39)
+              at ServerResponse.onResponseComplete (D:\Markaz\Aslam Portfolio\Aslams-Baig-Portfolio\node_modules\.pnpm\pino-http@10.5.0\node_modules\pino-http\logger.js:178:14)
+              at ServerResponse.emit (node:events:519:35)
+              at onFinish (node:_http_outgoing:1081:10)
+              at callback (node:internal/streams/writable:764:21)
+              at afterWrite (node:internal/streams/writable:708:5)
+              at afterWriteTick (node:internal/streams/writable:694:10)
+              at processTicksAndRejections (node:internal/process/task_queues:89:21)
+              at runNextTicks (node:internal/process/task_queues:69:3)
+              at process.processImmediate (node:internal/timers:476:9)
+    }
+1:26:52 am [tsx] change in ./src\app.ts Restarting...
+c[01:26:54.530] [31mERROR[39m (17632): [36mError listening on port[39m
+    err: {
+      "type": "Error",
+      "message": "listen EADDRINUSE: address already in use :::8790",
+      "stack":
+          Error: listen EADDRINUSE: address already in use :::8790
+              at Server.setupListenHandle [as _listen2] (node:net:1939:16)
+              at listenInCluster (node:net:1996:12)
+              at Server.listen (node:net:2101:7)
+              at Function.listen (D:\Markaz\Aslam Portfolio\Aslams-Baig-Portfolio\node_modules\.pnpm\express@5.2.1\node_modules\express\lib\application.js:605:24)
+              at <anonymous> (D:\Markaz\Aslam Portfolio\Aslams-Baig-Portfolio\artifacts\api-server\src\index.ts:21:7)
+              at ModuleJob.run (node:internal/modules/esm/module_job:274:25)
+              at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:644:26)
+              at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:98:5)
+      "code": "EADDRINUSE",
+      "errno": -4091,
+      "syscall": "listen",
+      "address": "::",
+      "port": 8790
+    }
