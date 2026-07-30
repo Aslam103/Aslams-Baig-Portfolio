@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { personalInfo } from "@/data/personalInfo";
+import aslamPic from "@/assets/aslampic.png";
 
 export function Hero() {
   const scrollTo = (id: string) => {
@@ -32,7 +33,7 @@ export function Hero() {
 
       <div className="container mx-auto px-4 z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
@@ -47,17 +48,17 @@ export function Hero() {
                 {personalInfo.roles.join(" · ")}
               </span>
             </div>
-            
+
             <div className="space-y-2">
               <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-foreground leading-[1.1]">
-                Mirza Aslam <br/>
+                Mirza Aslam <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-600">Baig</span>
               </h1>
               <p className="text-2xl text-cyan-400 italic mt-2 font-medium tracking-wide">
                 {personalInfo.tagline}
               </p>
             </div>
-            
+
             <div className="glass-panel p-6 rounded-xl border-l-4 border-l-cyan-500 bg-white/5 backdrop-blur-sm">
               <p className="text-muted-foreground text-base leading-relaxed mb-4">
                 {personalInfo.name} is an {personalInfo.roles.join(", ")} based in {personalInfo.location}. He architects practical learning experiences that combine AI tooling, data analytics, and structured automation — translating complex technical concepts into outcomes students actually use. Across {personalInfo.yearsExperience}+ years he has built courses, run training cohorts, mentored learners, designed dashboards, and shipped automation workflows on n8n and Docker. He is currently leading technical training and learning systems at {personalInfo.company.name} ({personalInfo.company.area}).
@@ -73,59 +74,59 @@ export function Hero() {
             </div>
 
             <div className="flex flex-wrap gap-4 mt-2">
-              <Button 
-                onClick={() => scrollTo("#projects")} 
-                size="lg" 
+              <Button
+                onClick={() => scrollTo("#projects")}
+                size="lg"
                 className="bg-cyan-600 hover:bg-cyan-500 text-white shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)] transition-all h-12 px-6"
                 data-testid="btn-hero-projects"
               >
                 <LayoutGrid className="w-5 h-5 mr-2" />
                 View Projects
               </Button>
-              <Button 
-                onClick={() => scrollTo("#courses")} 
-                variant="outline" 
-                size="lg" 
+              <Button
+                onClick={() => scrollTo("#courses")}
+                variant="outline"
+                size="lg"
                 className="border-white/20 hover:bg-white/10 h-12 px-6"
                 data-testid="btn-hero-courses"
               >
                 <Compass className="w-5 h-5 mr-2" />
                 Explore Courses
               </Button>
-              <Button 
-                onClick={() => scrollTo("#chatbot")} 
-                variant="outline" 
-                size="lg" 
+              <Button
+                onClick={() => scrollTo("#chatbot")}
+                variant="outline"
+                size="lg"
                 className="border-white/20 hover:bg-white/10 h-12 px-6"
                 data-testid="btn-hero-chat"
               >
                 <MessageSquare className="w-5 h-5 mr-2" />
                 Chat with AI
               </Button>
-              <Button 
-                onClick={() => scrollTo("#projects")} 
-                variant="outline" 
-                size="lg" 
+              <Button
+                onClick={() => scrollTo("#projects")}
+                variant="outline"
+                size="lg"
                 className="border-white/20 hover:bg-white/10 h-12 px-6"
                 data-testid="btn-hero-achievements"
               >
                 <Award className="w-5 h-5 mr-2" />
                 View Achievements
               </Button>
-              <Button 
-                onClick={() => scrollTo("#contact")} 
-                variant="outline" 
-                size="lg" 
+              <Button
+                onClick={() => scrollTo("#contact")}
+                variant="outline"
+                size="lg"
                 className="border-white/20 hover:bg-white/10 h-12 px-6"
                 data-testid="btn-hero-connect"
               >
                 <Users className="w-5 h-5 mr-2" />
                 Connect
               </Button>
-              <Button 
-                onClick={() => window.open(personalInfo.company.url, '_blank', 'noopener,noreferrer')} 
-                variant="outline" 
-                size="lg" 
+              <Button
+                onClick={() => window.open(personalInfo.company.url, '_blank', 'noopener,noreferrer')}
+                variant="outline"
+                size="lg"
                 className="border-white/20 hover:bg-white/10 h-12 px-6 text-cyan-400 hover:text-cyan-300"
                 data-testid="btn-hero-company"
               >
@@ -133,10 +134,10 @@ export function Hero() {
                 Visit Company
               </Button>
             </div>
-            
+
           </motion.div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
@@ -149,14 +150,17 @@ export function Hero() {
               <div className="absolute inset-20 rounded-full border border-white/5 animate-[spin_10s_linear_infinite]" />
 
               {/* MAB orb */}
-              <div className="absolute inset-24 rounded-full overflow-hidden bg-black/40 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-2xl">
+              <div className="absolute inset-24 rounded-full overflow-hidden bg-black/40 backdrop-blur-md border-4 border-cyan-400/60
+shadow-[0_0_40px_rgba(34,211,238,0.7)]
+ring-4 ring-cyan-500/20
+flex items-center justify-center">
                 <img
-                  src={`${import.meta.env.BASE_URL}src/assets/hero-avatar.png`}
-                  alt="MAB AI Avatar"
-                  className="w-full h-full object-cover opacity-90 mix-blend-screen"
+                  src={aslamPic}
+                  alt="Mirza Aslam Baig"
+                  className="w-full h-full object-cover rounded-full"
                   onError={(e) => {
-                     e.currentTarget.style.display = 'none';
-                     e.currentTarget.parentElement?.classList.add('bg-gradient-to-br', 'from-cyan-900', 'to-violet-900');
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.parentElement?.classList.add('bg-gradient-to-br', 'from-cyan-900', 'to-violet-900');
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
@@ -289,13 +293,12 @@ export function Hero() {
                 <Badge
                   key={tag}
                   variant="outline"
-                  className={`text-xs font-medium border px-3 py-1 backdrop-blur-sm ${
-                    i % 3 === 0
+                  className={`text-xs font-medium border px-3 py-1 backdrop-blur-sm ${i % 3 === 0
                       ? "border-cyan-500/30 bg-cyan-500/5 text-cyan-300"
                       : i % 3 === 1
-                      ? "border-violet-500/30 bg-violet-500/5 text-violet-300"
-                      : "border-white/15 bg-white/5 text-foreground/80"
-                  }`}
+                        ? "border-violet-500/30 bg-violet-500/5 text-violet-300"
+                        : "border-white/15 bg-white/5 text-foreground/80"
+                    }`}
                   data-testid={`chip-specialty-${tag.toLowerCase().replace(/\s+/g, "-")}`}
                 >
                   <Sparkles className="w-3 h-3 mr-1.5 opacity-70" />
