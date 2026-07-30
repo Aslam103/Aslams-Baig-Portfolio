@@ -111,7 +111,7 @@ export function Testimonials() {
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
             <div className="text-center">
-              <div className="text-2xl font-bold text-cyan-400">500+</div>
+              <div className="text-2xl font-bold text-cyan-400">1000+</div>
               <div className="text-sm text-muted-foreground">Students Trained</div>
             </div>
             <div className="text-center">
