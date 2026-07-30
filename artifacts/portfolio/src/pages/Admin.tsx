@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Link } from "wouter";
 import {
   addProject,
@@ -20,6 +20,9 @@ import {
 } from "@/lib/cms-api";
 import type { PortfolioContent, PortfolioSection, ProjectCard } from "@/lib/cms-types";
 import { DynamicPortfolio } from "@/components/portfolio/DynamicPortfolio";
+import { createDocument, deleteDocument, listAdminDocuments, subscribe, updateDocument } from "@/lib/documentStore";
+import { createTestimonial, deleteTestimonial, listAdminTestimonials, subscribe as subscribeTestimonials, updateTestimonial } from "@/lib/testimonialStore";
+import type { DocumentType } from "@/data/documents";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -60,6 +63,18 @@ function createLocalProject(): ProjectCard {
     url: "",
     imageUrl: "",
     logo: "🚀",
+  };
+}
+
+function createEmptyDocumentForm() {
+  return {
+    id: null as string | null,
+    title: "",
+    description: "",
+    category: "",
+    type: "pdf" as DocumentType,
+    access: "public" as "public" | "private",
+    file: null as File | null,
   };
 }
 
@@ -393,6 +408,19 @@ export default function Admin() {
   const [message, setMessage] = useState<string>("");
   const [showPreview, setShowPreview] = useState(true);
   const [dragId, setDragId] = useState<string | null>(null);
+  const [adminDocuments, setAdminDocuments] = useState(() => listAdminDocuments());
+  const [documentForm, setDocumentForm] = useState(createEmptyDocumentForm);
+  const [adminTestimonials, setAdminTestimonials] = useState(() => listAdminTestimonials());
+  const [testimonialForm, setTestimonialForm] = useState(() => ({
+    id: null as string | null,
+    name: "",
+    role: "",
+    company: "",
+    content: "",
+    rating: 5,
+    image: "",
+    course: "",
+  }));
 
   const selectedSection = useMemo(() => {
     if (!draft || !selectedSectionId) return null;
@@ -416,6 +444,16 @@ export default function Admin() {
       setAuthenticated(false);
     });
   }, [authenticated]);
+
+  useEffect(() => {
+    const unsub = subscribe(() => setAdminDocuments(listAdminDocuments()));
+    return () => unsub();
+  }, []);
+
+  useEffect(() => {
+    const unsub = subscribeTestimonials(() => setAdminTestimonials(listAdminTestimonials()));
+    return () => unsub();
+  }, []);
 
   if (!authenticated) {
     return <LoginScreen onSuccess={() => setAuthenticated(true)} />;
@@ -531,6 +569,179 @@ export default function Admin() {
     setMessage("Project card removed.");
   };
 
+  const handleTestimonialSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!testimonialForm.name.trim() || !testimonialForm.content.trim()) {
+      setMessage("Name and content are required.");
+      return;
+    }
+
+    try {
+      if (testimonialForm.id) {
+        await updateTestimonial({
+          id: testimonialForm.id,
+          name: testimonialForm.name,
+          role: testimonialForm.role,
+          company: testimonialForm.company,
+          content: testimonialForm.content,
+          rating: testimonialForm.rating,
+          image: testimonialForm.image,
+          course: testimonialForm.course,
+        });
+        setMessage("Testimonial updated.");
+      } else {
+        await createTestimonial({
+          name: testimonialForm.name,
+          role: testimonialForm.role,
+          company: testimonialForm.company,
+          content: testimonialForm.content,
+          rating: testimonialForm.rating,
+          image: testimonialForm.image,
+          course: testimonialForm.course,
+        });
+        setMessage("Testimonial added.");
+      }
+
+      setAdminTestimonials(listAdminTestimonials());
+      setTestimonialForm({
+        id: null,
+        name: "",
+        role: "",
+        company: "",
+        content: "",
+        rating: 5,
+        image: "",
+        course: "",
+      });
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Unable to save the testimonial.");
+    }
+  };
+
+  const handleTestimonialEdit = (testimonial: (typeof adminTestimonials)[number]) => {
+    setTestimonialForm({
+      id: testimonial.id,
+      name: testimonial.name,
+      role: testimonial.role,
+      company: testimonial.company,
+      content: testimonial.content,
+      rating: testimonial.rating,
+      image: testimonial.image,
+      course: testimonial.course,
+    });
+    setMessage(`Editing "${testimonial.name}".`);
+  };
+
+  const handleTestimonialDelete = async (testimonialId: string) => {
+    try {
+      await deleteTestimonial(testimonialId);
+      setAdminTestimonials(listAdminTestimonials());
+      if (testimonialForm.id === testimonialId) {
+        setTestimonialForm({
+          id: null,
+          name: "",
+          role: "",
+          company: "",
+          content: "",
+          rating: 5,
+          image: "",
+          course: "",
+        });
+      }
+      setMessage("Testimonial removed.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Unable to remove the testimonial.");
+    }
+  };
+
+  const resetDocumentForm = () => {
+    setDocumentForm(createEmptyDocumentForm());
+  };
+
+  const handleDocumentQuickAdd = (category: string, title: string, description: string) => {
+    setDocumentForm({
+      id: null,
+      title,
+      description,
+      category,
+      type: "pdf",
+      access: "public",
+      file: null,
+    });
+    setMessage(`Drafting a new ${category.toLowerCase()} entry.`);
+  };
+
+  const handleDocumentSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!documentForm.title.trim() || !documentForm.description.trim() || !documentForm.category.trim()) {
+      setMessage("Please fill in the title, description, and category.");
+      return;
+    }
+
+    try {
+      if (documentForm.id) {
+        await updateDocument({
+          id: documentForm.id,
+          title: documentForm.title,
+          description: documentForm.description,
+          category: documentForm.category,
+          type: documentForm.type,
+          access: documentForm.access,
+          file: documentForm.file,
+        });
+        setMessage("Resource updated.");
+      } else {
+        if (!documentForm.file) {
+          setMessage("Please choose a file before adding the resource.");
+          return;
+        }
+
+        await createDocument({
+          title: documentForm.title,
+          description: documentForm.description,
+          category: documentForm.category,
+          type: documentForm.type,
+          access: documentForm.access,
+          file: documentForm.file,
+        });
+        setMessage("Resource added to the portfolio.");
+      }
+
+      setAdminDocuments(listAdminDocuments());
+      resetDocumentForm();
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Unable to save the resource.");
+    }
+  };
+
+  const handleDocumentEdit = (doc: (typeof adminDocuments)[number]) => {
+    setDocumentForm({
+      id: doc.id,
+      title: doc.title,
+      description: doc.description,
+      category: doc.category,
+      type: doc.type,
+      access: doc.access,
+      file: null,
+    });
+    setMessage(`Editing ${doc.title}.`);
+  };
+
+  const handleDocumentDelete = async (docId: string) => {
+    try {
+      await deleteDocument(docId);
+      setAdminDocuments(listAdminDocuments());
+      if (documentForm.id === docId) {
+        resetDocumentForm();
+      }
+      setMessage("Resource removed.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Unable to remove the resource.");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
       <header className="sticky top-0 z-40 border-b border-white/10 bg-black/40 backdrop-blur">
@@ -622,6 +833,301 @@ export default function Admin() {
         </aside>
 
         <section className="space-y-6">
+          <div className="rounded-xl border border-white/10 bg-white/5 p-4 space-y-4">
+            <div className="flex items-center justify-between gap-2">
+              <div>
+                <h2 className="font-semibold">Testimonials Manager</h2>
+                <p className="text-sm text-slate-400">
+                  Add, edit, or remove student success stories and testimonials.
+                </p>
+              </div>
+            </div>
+
+            <form className="space-y-3" onSubmit={handleTestimonialSubmit}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label>Name</Label>
+                  <Input
+                    value={testimonialForm.name}
+                    onChange={(event) => setTestimonialForm({ ...testimonialForm, name: event.target.value })}
+                    placeholder="Student name"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Role</Label>
+                  <Input
+                    value={testimonialForm.role}
+                    onChange={(event) => setTestimonialForm({ ...testimonialForm, role: event.target.value })}
+                    placeholder="e.g. Data Analyst, Developer"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Company</Label>
+                  <Input
+                    value={testimonialForm.company}
+                    onChange={(event) => setTestimonialForm({ ...testimonialForm, company: event.target.value })}
+                    placeholder="Current company"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Course</Label>
+                  <Input
+                    value={testimonialForm.course}
+                    onChange={(event) => setTestimonialForm({ ...testimonialForm, course: event.target.value })}
+                    placeholder="e.g. Data Analytics Program"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Testimonial Content</Label>
+                <Textarea
+                  rows={4}
+                  value={testimonialForm.content}
+                  onChange={(event) => setTestimonialForm({ ...testimonialForm, content: event.target.value })}
+                  placeholder="The student's success story or testimonial..."
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label>Profile Image URL</Label>
+                  <Input
+                    value={testimonialForm.image}
+                    onChange={(event) => setTestimonialForm({ ...testimonialForm, image: event.target.value })}
+                    placeholder="https://images.example.com/photo.jpg"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Rating (1-5 stars)</Label>
+                  <Select
+                    value={String(testimonialForm.rating)}
+                    onValueChange={(value) => setTestimonialForm({ ...testimonialForm, rating: Number(value) })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1">1 Star</SelectItem>
+                      <SelectItem value="2">2 Stars</SelectItem>
+                      <SelectItem value="3">3 Stars</SelectItem>
+                      <SelectItem value="4">4 Stars</SelectItem>
+                      <SelectItem value="5">5 Stars</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                <Button type="submit">
+                  {testimonialForm.id ? "Save Changes" : "Add Testimonial"}
+                </Button>
+                {testimonialForm.id && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() =>
+                      setTestimonialForm({
+                        id: null,
+                        name: "",
+                        role: "",
+                        company: "",
+                        content: "",
+                        rating: 5,
+                        image: "",
+                        course: "",
+                      })
+                    }
+                  >
+                    Cancel Edit
+                  </Button>
+                )}
+              </div>
+            </form>
+
+            <div className="space-y-2">
+              <h3 className="font-medium">Existing testimonials</h3>
+              <div className="space-y-2 max-h-96 overflow-y-auto">
+                {adminTestimonials.length === 0 ? (
+                  <p className="text-sm text-slate-400">No custom testimonials yet.</p>
+                ) : (
+                  adminTestimonials.map((testimonial) => (
+                    <div key={testimonial.id} className="rounded-lg border border-white/10 bg-black/20 p-3 flex flex-col gap-2">
+                      <div className="flex flex-col md:flex-row md:items-start md:justify-between">
+                        <div className="flex-1">
+                          <p className="font-medium">{testimonial.name}</p>
+                          <p className="text-sm text-slate-400">
+                            {testimonial.role} at {testimonial.company}
+                          </p>
+                          <p className="text-sm text-slate-300 mt-1 line-clamp-2">"{testimonial.content}"</p>
+                          <p className="text-xs text-violet-400 mt-1">{testimonial.course}</p>
+                        </div>
+                        <div className="flex gap-2 mt-2 md:mt-0 flex-shrink-0">
+                          <Button type="button" variant="outline" size="sm" onClick={() => handleTestimonialEdit(testimonial)}>
+                            Edit
+                          </Button>
+                          <Button type="button" variant="destructive" size="sm" onClick={() => void handleTestimonialDelete(testimonial.id)}>
+                            Remove
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-white/10 bg-white/5 p-4 space-y-4">
+            <div className="flex items-center justify-between gap-2">
+              <div>
+                <h2 className="font-semibold">Resources Manager</h2>
+                <p className="text-sm text-slate-400">
+                  Add, update, or remove public books, documents, and certificates.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => handleDocumentQuickAdd("Book", "New Book", "Describe the book and what visitors should expect.")}
+              >
+                + Add Book
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => handleDocumentQuickAdd("Document", "New Document", "Add a useful resource or note for visitors.")}
+              >
+                + Add Document
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => handleDocumentQuickAdd("Certificate", "New Certificate", "Show a professional certification or achievement.")}
+              >
+                + Add Certificate
+              </Button>
+              <Button type="button" variant="secondary" onClick={resetDocumentForm}>
+                Reset Form
+              </Button>
+            </div>
+
+            <form className="space-y-3" onSubmit={handleDocumentSubmit}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label>Title</Label>
+                  <Input
+                    value={documentForm.title}
+                    onChange={(event) => setDocumentForm({ ...documentForm, title: event.target.value })}
+                    placeholder="e.g. Data Analytics Playbook"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Category</Label>
+                  <Input
+                    value={documentForm.category}
+                    onChange={(event) => setDocumentForm({ ...documentForm, category: event.target.value })}
+                    placeholder="Book, Document, Certificate, etc."
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Type</Label>
+                  <Select
+                    value={documentForm.type}
+                    onValueChange={(value: DocumentType) => setDocumentForm({ ...documentForm, type: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pdf">PDF</SelectItem>
+                      <SelectItem value="ppt">PPT</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Visibility</Label>
+                  <Select
+                    value={documentForm.access}
+                    onValueChange={(value: "public" | "private") => setDocumentForm({ ...documentForm, access: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="public">Public</SelectItem>
+                      <SelectItem value="private">Private</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Description</Label>
+                <Textarea
+                  rows={3}
+                  value={documentForm.description}
+                  onChange={(event) => setDocumentForm({ ...documentForm, description: event.target.value })}
+                  placeholder="Describe what visitors can expect from this resource."
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>{documentForm.id ? "Replace file (optional)" : "Upload file"}</Label>
+                <Input
+                  type="file"
+                  accept=".pdf,.ppt,.pptx"
+                  onChange={(event) => {
+                    const file = event.target.files?.[0] ?? null;
+                    setDocumentForm({ ...documentForm, file });
+                  }}
+                />
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                <Button type="submit">
+                  {documentForm.id ? "Save Changes" : "Add Resource"}
+                </Button>
+                {documentForm.id && (
+                  <Button type="button" variant="outline" onClick={resetDocumentForm}>
+                    Cancel Edit
+                  </Button>
+                )}
+              </div>
+            </form>
+
+            <div className="space-y-2">
+              <h3 className="font-medium">Existing resources</h3>
+              <div className="space-y-2">
+                {adminDocuments.length === 0 ? (
+                  <p className="text-sm text-slate-400">No custom resources yet.</p>
+                ) : (
+                  adminDocuments.map((doc) => (
+                    <div key={doc.id} className="rounded-lg border border-white/10 bg-black/20 p-3 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                      <div>
+                        <p className="font-medium">{doc.title}</p>
+                        <p className="text-sm text-slate-400">
+                          {doc.category} • {doc.type.toUpperCase()} • {doc.access}
+                        </p>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button type="button" variant="outline" onClick={() => handleDocumentEdit(doc)}>
+                          Edit
+                        </Button>
+                        <Button type="button" variant="destructive" onClick={() => void handleDocumentDelete(doc.id)}>
+                          Remove
+                        </Button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+
           {selectedSection ? (
             <SectionEditor
               section={selectedSection}

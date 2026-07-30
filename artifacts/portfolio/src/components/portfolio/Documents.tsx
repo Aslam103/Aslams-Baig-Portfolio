@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { FileText, Download, Lock, FileArchive, Library } from "lucide-react";
+import { posts } from "@/data/posts";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { downloadResumePdf } from "@/lib/generateResume";
@@ -80,6 +81,36 @@ export function Documents() {
             Download a clean, ATS-optimized resume generated directly from this portfolio's live data.
             More document downloads will be added soon.
           </p>
+        </div>
+
+        {/* Course flyers & summaries posted by the author */}
+        <div className="mb-12">
+          <div className="grid md:grid-cols-2 gap-6">
+            {posts.map((post) => (
+              <motion.div
+                key={post.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+              >
+                <Card className="h-full flex flex-col">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-lg">{post.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex-1">
+                    <div className="mb-4">
+                      <img
+                        src={post.image}
+                        alt={post.title}
+                        className="w-full h-48 object-cover rounded-md shadow-sm"
+                      />
+                    </div>
+                    <p className="text-sm text-muted-foreground">{post.summary}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

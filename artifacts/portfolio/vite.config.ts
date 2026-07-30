@@ -20,10 +20,20 @@ export default defineConfig({
     tailwindcss(),
   ],
   resolve: {
-    alias: {
-      "@": path.resolve(import.meta.dirname, "src"),
-      "@assets": path.resolve(import.meta.dirname, "..", "..", "attached_assets"),
-    },
+    alias: [
+      {
+        find: /^@\/lib\/ui\/(.*)$/,
+        replacement: path.resolve(import.meta.dirname, "..", "..", "lib", "ui", "$1"),
+      },
+      {
+        find: "@",
+        replacement: path.resolve(import.meta.dirname, "src"),
+      },
+      {
+        find: "@assets",
+        replacement: path.resolve(import.meta.dirname, "..", "..", "attached_assets"),
+      },
+    ],
     dedupe: ["react", "react-dom"],
   },
   root: path.resolve(import.meta.dirname),

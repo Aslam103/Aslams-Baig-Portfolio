@@ -57,6 +57,11 @@ export const db = {
 
 export async function verifySupabaseConnection() {
   const client = getSupabaseClient();
+  if (!client) {
+    throw new Error(
+      "Supabase is not configured. Set SUPABASE_URL and SUPABASE_ANON_KEY (or SUPABASE_SERVICE_ROLE_KEY).",
+    );
+  }
   const { error } = await client.auth.getSession();
   if (error) {
     throw new Error(`Supabase connection check failed: ${error.message}`);

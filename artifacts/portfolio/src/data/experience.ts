@@ -15,10 +15,11 @@ export const experience: ExperienceItem[] = [
     color: "cyan"
   },
   {
-    title: "Office Coordinator & Administrator",
-    company: "Zakat Center India, Hyderabad",
-    period: "Nov 2022 – Present",
-    description: "Reduced financial discrepancies 20% via Focus + Google Sheets reconciliation.",
+    title: "Office Coordinator & Administrative Executive",
+    company: "Zakat Center India – Hyderabad Unit",
+    period: "2 Years",
+    description:
+      "Managed day-to-day office administration, documentation, and operational activities. Handled accounting records, vouchers, expense tracking, and financial reconciliation. Coordinated events, educational programs, and skill development initiatives. Organized interviews and conducted Level 1 & Level 2 candidate/beneficiary screening and document verification. Provided counselling and support to beneficiaries for education, self-employment, and skill development programs. Maintained reports, databases, and MIS using Microsoft Excel and Google Sheets.",
     color: "violet"
   },
   {

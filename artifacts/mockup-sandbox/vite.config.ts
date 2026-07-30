@@ -22,9 +22,16 @@ export default defineConfig({
     tailwindcss(),
   ],
   resolve: {
-    alias: {
-      "@": path.resolve(import.meta.dirname, "src"),
-    },
+    alias: [
+      {
+        find: /^@\/lib\/ui\/(.*)$/,
+        replacement: path.resolve(import.meta.dirname, "..", "..", "lib", "ui", "$1"),
+      },
+      {
+        find: "@",
+        replacement: path.resolve(import.meta.dirname, "src"),
+      },
+    ],
   },
   root: path.resolve(import.meta.dirname),
   build: {
