@@ -71,7 +71,7 @@ export function About() {
                         </li>
                         <li className="flex justify-between border-b border-white/5 pb-2">
                           <span className="text-muted-foreground">DOB</span>
-                          <span className="font-medium">12 July 1989</span>
+                          <span className="font-medium">12 July 1990</span>
                         </li>
                         <li className="flex justify-between border-b border-white/5 pb-2">
                           <span className="text-muted-foreground">Location</span>
